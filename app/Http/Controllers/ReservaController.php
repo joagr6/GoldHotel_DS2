@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reserva;
-use App\Models\Hospede;
 use App\Models\Quarto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservaController extends Controller
 {
     /**
-     * Exibe a lista de reservas
+     * Exibe a lista de reservas do hóspede logado
      */
     public function index()
     {
-        // Busca todas as reservas com seus relacionamentos (hóspede e quarto)
-        $dados = Reserva::with(['hospede', 'quarto'])->get();
+        // Busca apenas as reservas do hóspede autenticado
+        $dados = Reserva::with('quarto')
+            ->where('hospede_id', Auth::id())
+            ->get();
 
-        // Retorna para a view, enviando a variável $dados
         return view('reserva.list', compact('dados'));
     }
 
@@ -26,12 +27,11 @@ class ReservaController extends Controller
      */
     public function create()
     {
-        $hospedes = Hospede::all();
-        $quartos = Quarto::all();
+        // Busca apenas os quartos disponíveis
+        $quartos = Quarto::where('disponivel', true)->get();
 
         return view('reserva.form', [
             'dado' => new Reserva(),
-            'hospedes' => $hospedes,
             'quartos' => $quartos,
         ]);
     }
@@ -41,106 +41,62 @@ class ReservaController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validateRequest($request);
+        $request->validate([
+            'data_entrada' => 'required|date',
+            'data_saida'   => 'required|date|after_or_equal:data_entrada',
+            'quarto_id'    => 'required|exists:quartos,id',
+        ], [
+            'data_entrada.required' => 'A data de entrada é obrigatória',
+            'data_saida.required' => 'A data de saída é obrigatória',
+            'data_saida.after_or_equal' => 'A data de saída deve ser posterior à de entrada',
+            'quarto_id.required' => 'Selecione um quarto',
+        ]);
 
-        Reserva::create($request->only([
-            'data_entrada',
-            'data_saida',
-            'status',
-            'hospede_id',
-            'quarto_id'
-        ]));
+        // Cria a reserva com base no hóspede autenticado
+        Reserva::create([
+            'data_entrada' => $request->data_entrada,
+            'data_saida'   => $request->data_saida,
+            'status'       => 'Ativa',
+            'hospede_id'   => Auth::id(),
+            'quarto_id'    => $request->quarto_id,
+        ]);
+
+        // Atualiza o status do quarto para indisponível
+        $quarto = Quarto::find($request->quarto_id);
+        $quarto->update(['disponivel' => false]);
 
         return redirect()->route('reserva.index')
             ->with('success', 'Reserva registrada com sucesso!');
     }
 
     /**
-     * Exibe uma reserva específica
+     * Exibe os detalhes de uma reserva (apenas do hóspede logado)
      */
     public function show($id)
     {
-        $reserva = Reserva::with(['hospede', 'quarto'])->findOrFail($id);
-        return view('reservas.show', compact('reserva'));
+        $reserva = Reserva::where('hospede_id', Auth::id())
+            ->with('quarto')
+            ->findOrFail($id);
+
+        return view('reserva.show', compact('reserva'));
     }
 
     /**
-     * Exibe o formulário para editar uma reserva existente
-     */
-    public function edit($id)
-    {
-        $dado = Reserva::findOrFail($id);
-        $hospedes = Hospede::all();
-        $quartos = Quarto::all();
-
-        return view('reserva.form', compact('dado', 'hospedes', 'quartos'));
-    }
-
-    /**
-     * Atualiza uma reserva no banco
-     */
-    public function update(Request $request, $id)
-    {
-        $this->validateRequest($request);
-
-        $reserva = Reserva::findOrFail($id);
-        $reserva->update($request->only([
-            'data_entrada',
-            'data_saida',
-            'status',
-            'hospede_id',
-            'quarto_id'
-        ]));
-
-        return redirect()->route('reserva.index')
-            ->with('success', 'Reserva atualizada com sucesso!');
-    }
-
-    /**
-     * Remove uma reserva
+     * Remove uma reserva (apenas do hóspede logado)
      */
     public function destroy($id)
     {
-        $reserva = Reserva::findOrFail($id);
+        $reserva = Reserva::where('hospede_id', Auth::id())->findOrFail($id);
+        
+        // Libera o quarto
+        $quarto = Quarto::find($reserva->quarto_id);
+        if ($quarto) {
+            $quarto->update(['disponivel' => true]);
+        }
+
         $reserva->delete();
 
         return redirect()->route('reserva.index')
-            ->with('success', 'Reserva excluída com sucesso!');
-    }
-
-    /**
-     * Busca reservas por campo e valor
-     */
-    public function search(Request $request)
-    {
-        $tipo = $request->tipo;
-        $valor = $request->valor;
-
-        $reservas = Reserva::with(['hospede', 'quarto'])
-            ->where($tipo, 'like', "%{$valor}%")
-            ->get();
-
-        return view('reserva.list', compact('reservas'));
-    }
-
-    /**
-     * Validação padrão
-     */
-    private function validateRequest(Request $request)
-    {
-        $request->validate([
-            'data_entrada' => 'required|date',
-            'data_saida'   => 'required|date|after_or_equal:data_entrada',
-            'status'       => 'required|string|max:20',
-            'hospede_id'   => 'required|exists:hospedes,id',
-            'quarto_id'    => 'required|exists:quartos,id',
-        ], [
-            'data_entrada.required' => 'A data de entrada é obrigatória',
-            'data_saida.required' => 'A data de saída é obrigatória',
-            'data_saida.after_or_equal' => 'A data de saída deve ser posterior à de entrada',
-            'status.required' => 'O status é obrigatório',
-            'hospede_id.required' => 'Selecione um hóspede',
-            'quarto_id.required' => 'Selecione um quarto',
-        ]);
+            ->with('success', 'Reserva cancelada com sucesso!');
     }
 }

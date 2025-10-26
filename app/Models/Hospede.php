@@ -2,10 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Hospede extends Model
+class Hospede extends Authenticatable
 {
-    use HasFactory;
+    use Notifiable;
+
+    protected $table = 'hospedes';
+
+    protected $fillable = [
+        'nome',
+        'cpf',
+        'data_nascimento',
+        'telefone',
+        'email',
+        'cidade',
+        'numcasa',
+        'rua',
+        'senha',
+    ];
+
+    protected $hidden = ['remember_token'];
 }

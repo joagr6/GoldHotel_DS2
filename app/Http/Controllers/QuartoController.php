@@ -12,7 +12,11 @@ class QuartoController extends Controller
      */
     public function index()
     {
-        //
+        // Busca todos os quartos no banco
+        $quartos = Quarto::all();
+
+        // Retorna a view de quartos
+        return view('quarto.dashboard', compact('quartos'));
     }
 
     /**

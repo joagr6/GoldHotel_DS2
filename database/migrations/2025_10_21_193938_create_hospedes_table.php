@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('cidade',50)->nullable();
             $table->string('numcasa',50)->nullable();
             $table->string('rua',50)->nullable();
+            $table->string('senha',255);
             $table->timestamps();
         });
     }
