@@ -2,64 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Administrador;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Administrador;
+
 
 class AdministradorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function showLoginForm()
     {
-        //
+        return view('administrador.login');
+    }
+public function login(Request $request)
+{
+    $request->validate([
+        'cpf' => 'required',
+        'senha' => 'required',
+    ]);
+
+    // tenta logar com o guard administrador
+    if (Auth::guard('administrador')->attempt([
+        'cpf' => $request->cpf,
+        'password' => $request->senha
+    ])) {
+        return redirect()->route('quartos.create')->with('success', 'Login realizado com sucesso!');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    return back()->withErrors(['cpf' => 'CPF ou senha inválidos.']);
+}
+
+  public function logout(Request $request)
+{
+    Auth::guard('administrador')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login.admin');
+}
+   
+public function dashboard()
+{
+    if (!session('admin_id')) {
+        return redirect()->route('login.admin'); // OK
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Administrador $administrador)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Administrador $administrador)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Administrador $administrador)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Administrador $administrador)
-    {
-        //
-    }
+    return view('quartos.form'); // já que você não tem dashboard ainda
+}
 }

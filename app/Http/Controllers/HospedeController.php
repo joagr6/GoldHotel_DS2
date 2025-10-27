@@ -103,8 +103,55 @@ public function logout(Request $request)
      * Mostra os dados do hóspede logado
      */
     public function meusDados()
-    {
-        $hospede = Auth::guard('hospede')->user();
-        return view('hospede.perfil', compact('hospede'));
+{
+    // Pega o hóspede logado
+    $hospede = Auth::guard('hospede')->user();
+
+    // Garante que existe um hóspede logado
+    if (!$hospede) {
+        return redirect()->route('hospede.login')->withErrors('Faça login para acessar seus dados.');
     }
+
+    // Envia para a view
+    return view('hospede.dados', compact('hospede'));
+}
+
+
+
+public function edit()
+{
+    $hospede = Auth::guard('hospede')->user();
+
+    if (!$hospede) {
+        return redirect()->route('hospede.login')->withErrors('Faça login para acessar esta página.');
+    }
+
+    return view('hospede.dados', compact('hospede'));
+}
+
+public function update(Request $request, $id)
+{
+    $hospede = Hospede::findOrFail($id);
+
+    $validated = $request->validate([
+        'nome' => 'required|string|max:255',
+        'data_nascimento' => 'required|date',
+        'email' => 'required|email|unique:hospedes,email,' . $id,
+        'senha' => 'nullable|string|min:6|confirmed',
+    ]);
+
+    $hospede->nome = $validated['nome'];
+    $hospede->data_nascimento = $validated['data_nascimento'];
+    $hospede->email = $validated['email'];
+
+    // só atualiza a senha se o campo for preenchido
+    if (!empty($validated['senha'])) {
+        $hospede->senha = bcrypt($validated['senha']);
+    }
+
+    $hospede->save();
+
+    return redirect()->route('hospede.dashboard')->with('success', 'Dados atualizados com sucesso!');
+}
+
 }

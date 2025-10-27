@@ -22,18 +22,25 @@ class QuartoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+   public function create()
+{
+    return view('quarto.form');
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nome' => 'required|string|max:100',
+        'descricao' => 'required|string',
+        'preco' => 'required|numeric',
+        'imagem' => 'nullable|image|max:2048',
+    ]);
+
+    // salva no banco
+    \App\Models\Quarto::create($validated);
+
+    return redirect()->route('dashboard.admin')->with('success', 'Quarto cadastrado com sucesso!');
+}
 
     /**
      * Display the specified resource.

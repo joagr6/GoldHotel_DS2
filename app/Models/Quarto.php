@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quarto extends Model
 {
-    protected $fillable = ['capacidade', 'valorDiaria', 'status', 'tipoQuarto'];
+    protected $fillable = ['capacidade', 'valorDiaria', 'status', 'tipoQuarto', 'imagem'];
 };

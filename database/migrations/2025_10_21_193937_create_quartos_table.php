@@ -17,6 +17,8 @@ return new class extends Migration
             $table->double('valorDiaria',50);
             $table->string('status',20);
             $table->string('tipoQuarto',50);
+            $table->string('imagem')->nullable(); // <-- adiciona esta linha
+
             $table->timestamps();
         });
     }

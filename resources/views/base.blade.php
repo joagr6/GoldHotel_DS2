@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        @yield('content')
-    </div>
+<body class="bg-light m-0 p-0">
+
+    {{-- Conteúdo da página --}}
+    @yield('content')
+
 </body>
 </html>
