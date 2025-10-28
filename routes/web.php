@@ -49,6 +49,7 @@ Route::delete('/reserva/{id}', [ReservaController::class, 'destroy'])->name('res
 
 Route::get('/quartos', [QuartoController::class, 'index'])->name('quartos.index');
 Route::post('/quartos', [QuartoController::class, 'store'])->name('quartos.store');
+Route::get('/hospede/quartos', [QuartoController::class, 'listaHospede'])->name('hospede.quartos');
 
 
 Route::get('/admin/login', [AdministradorController::class, 'showLoginForm'])->name('login.admin');
@@ -57,6 +58,14 @@ Route::post('/admin/login', [AdministradorController::class, 'login'])->name('lo
 Route::middleware('auth:administrador')->group(function () {
     Route::get('/cadastro-quarto', [QuartoController::class, 'create'])->name('quartos.create');
     Route::post('/cadastro-quarto', [QuartoController::class, 'store'])->name('quartos.store');
+
+    // ✅ Corrigido: antes chamava store(), agora chama index()
+
+    Route::delete('/quartos/{id}', [QuartoController::class, 'destroy'])->name('quartos.destroy');
+    Route::put('/quartos/{id}', [QuartoController::class, 'update'])->name('quartos.update');
+    Route::get('/quartos/{id}/edit', [QuartoController::class, 'edit'])->name('quartos.edit');
+    Route::get('/Lista-quarto', [QuartoController::class, 'index'])->name('quarto.list');
+
 
     Route::post('/admin/logout', [AdministradorController::class, 'logout'])->name('logout.admin');
 });

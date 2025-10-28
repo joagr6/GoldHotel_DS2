@@ -29,11 +29,25 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="capacidade" class="form-label">Capacidade</label>
-                        <input type="text" name="capacidade" id="capacidade" class="form-control" value="{{ old('capacidade') }}" required>
+                        <input 
+                            type="text" 
+                            name="capacidade" 
+                            id="capacidade" 
+                            class="form-control" 
+                            value="{{ old('capacidade') }}" 
+                            required>
                     </div>
+
                     <div class="col-md-6">
                         <label for="valorDiaria" class="form-label">Valor da Diária (R$)</label>
-                        <input type="number" step="0.01" name="valorDiaria" id="valorDiaria" class="form-control" value="{{ old('valorDiaria') }}" required>
+                        <input 
+                            type="number" 
+                            step="0.01" 
+                            name="valorDiaria" 
+                            id="valorDiaria" 
+                            class="form-control" 
+                            value="{{ old('valorDiaria') }}" 
+                            required>
                     </div>
                 </div>
 
@@ -47,20 +61,32 @@
                             <option value="Em manutenção" {{ old('status') == 'Em manutenção' ? 'selected' : '' }}>Em manutenção</option>
                         </select>
                     </div>
+
                     <div class="col-md-6">
                         <label for="tipoQuarto" class="form-label">Tipo de Quarto</label>
-                        <input type="text" name="tipoQuarto" id="tipoQuarto" class="form-control" value="{{ old('tipoQuarto') }}" required>
+                        <input 
+                            type="text" 
+                            name="tipoQuarto" 
+                            id="tipoQuarto" 
+                            class="form-control" 
+                            value="{{ old('tipoQuarto') }}" 
+                            required>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="imagem" class="form-label">Imagem do Quarto</label>
-                    <input type="file" name="imagem" id="imagem" class="form-control" accept="image/*">
+                    <input 
+                        type="file" 
+                        name="imagem" 
+                        id="imagem" 
+                        class="form-control" 
+                        accept="image/*">
                 </div>
 
                 <div class="text-end">
                     <button type="submit" class="btn btn-success">Cadastrar Quarto</button>
-                    <a  class="btn btn-secondary">Cancelar</a>
+                    <a href="{{ route('login.admin') }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>
