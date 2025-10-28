@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class QuartoController extends Controller
 {
     /**
-     * Exibe lista completa (para o administrador)
+     * Lista de quartos (para administrador)
      */
     public function index()
     {
@@ -17,19 +17,16 @@ class QuartoController extends Controller
     }
 
     /**
-     * Exibe apenas quartos disponíveis (para o hóspede)
+     * Lista de quartos (para hóspede visualizar)
      */
     public function listaHospede()
     {
-        // Filtra apenas quartos com status "disponível"
-        $quartos = Quarto::where('status', 'disponível')->get();
-
-        // Retorna a view específica dos hóspedes
-        return view('hospede.quartos', compact('quartos'));
+        $quartos = Quarto::all();
+        return view('quarto.dashboard', compact('quartos')); // <-- ajustado
     }
 
     /**
-     * Formulário de criação (somente admin)
+     * Formulário de criação de quarto (admin)
      */
     public function create()
     {
@@ -37,7 +34,7 @@ class QuartoController extends Controller
     }
 
     /**
-     * Armazena um novo quarto (somente admin)
+     * Armazena novo quarto
      */
     public function store(Request $request)
     {
@@ -55,28 +52,50 @@ class QuartoController extends Controller
 
         Quarto::create($validated);
 
-        return redirect()
-            ->route('quartos.index')
-            ->with('success', 'Quarto cadastrado com sucesso!');
+        return redirect()->route('quartos.index')->with('success', 'Quarto cadastrado com sucesso!');
     }
 
-    public function show(Quarto $quarto)
+    /**
+     * Editar quarto existente
+     */
+    public function edit($id)
     {
-        //
+        $quarto = Quarto::findOrFail($id);
+        return view('quarto.form', compact('quarto'));
     }
 
-    public function edit(Quarto $quarto)
+    /**
+     * Atualizar quarto existente
+     */
+    public function update(Request $request, $id)
     {
-        //
+        $quarto = Quarto::findOrFail($id);
+
+        $validated = $request->validate([
+            'capacidade' => 'required|string|max:50',
+            'valorDiaria' => 'required|numeric|min:0',
+            'status' => 'required|string|max:20',
+            'tipoQuarto' => 'required|string|max:50',
+            'imagem' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('imagem')) {
+            $validated['imagem'] = $request->file('imagem')->store('quartos', 'public');
+        }
+
+        $quarto->update($validated);
+
+        return redirect()->route('quartos.index')->with('success', 'Quarto atualizado com sucesso!');
     }
 
-    public function update(Request $request, Quarto $quarto)
+    /**
+     * Excluir quarto
+     */
+    public function destroy($id)
     {
-        //
-    }
+        $quarto = Quarto::findOrFail($id);
+        $quarto->delete();
 
-    public function destroy(Quarto $quarto)
-    {
-        //
+        return redirect()->route('quartos.index')->with('success', 'Quarto excluído com sucesso!');
     }
 }

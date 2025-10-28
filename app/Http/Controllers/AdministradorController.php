@@ -25,7 +25,7 @@ public function login(Request $request)
         'cpf' => $request->cpf,
         'password' => $request->senha
     ])) {
-        return redirect()->route('quarto.list')->with('success', 'Login realizado com sucesso!');
+        return redirect()->route('quartos.index')->with('success', 'Login realizado com sucesso!');
     }
 
     return back()->withErrors(['cpf' => 'CPF ou senha inválidos.']);
