@@ -20,7 +20,6 @@ public function login(Request $request)
         'senha' => 'required',
     ]);
 
-    // tenta logar com o guard administrador
     if (Auth::guard('administrador')->attempt([
         'cpf' => $request->cpf,
         'password' => $request->senha
@@ -43,9 +42,9 @@ public function login(Request $request)
 public function dashboard()
 {
     if (!session('admin_id')) {
-        return redirect()->route('login.admin'); // OK
+        return redirect()->route('login.admin'); 
     }
 
-    return view('quartos.form'); // já que você não tem dashboard ainda
+    return view('quartos.form'); 
 }
 }

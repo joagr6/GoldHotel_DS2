@@ -20,7 +20,6 @@
 </head>
 <body>
 
-    <!-- Barra superior -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold text-uppercase" href="#">
@@ -44,7 +43,7 @@
         <p>Veja suas reservas ativas e passadas.</p>
 
         <div class="bg-white p-4 rounded shadow-sm">
-            <p>Aqui vão as informações das reservas do hóspede...</p>
+            <p></p>
         </div>
     </div>
 

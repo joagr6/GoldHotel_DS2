@@ -11,7 +11,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// --- Login e cadastro de hóspede ---
+//  Login e cadastro de hóspede 
 Route::get('/login-hospede', [HospedeController::class, 'showLoginForm'])->name('hospede.login');
 Route::post('/login-hospede', [HospedeController::class, 'login'])->name('hospede.login.post');
 Route::get('/logout-hospede', [HospedeController::class, 'logout'])->name('hospede.logout');
@@ -27,7 +27,7 @@ Route::middleware('auth:hospede')->group(function () {
     Route::get('/quarto/quartos', [QuartoController::class, 'listaHospede'])->name('quarto.dashboard');
 });
 
-// --- Rotas de reservas ---
+//  Rotas de reservas 
 Route::get('/reserva', [ReservaController::class, 'index'])->name('reserva.index');
 Route::get('/reserva/create', [ReservaController::class, 'create'])->name('reserva.create');
 Route::post('/reserva', [ReservaController::class, 'store'])->name('reserva.store');
@@ -36,11 +36,11 @@ Route::put('/reserva/update/{id}', [ReservaController::class, 'update'])->name('
 Route::post('/reserva/search', [ReservaController::class, 'search'])->name('reserva.search');
 Route::delete('/reserva/{id}', [ReservaController::class, 'destroy'])->name('reserva.destroy');
 
-// --- Login admin ---
+//  Login admin 
 Route::get('/admin/login', [AdministradorController::class, 'showLoginForm'])->name('login.admin');
 Route::post('/admin/login', [AdministradorController::class, 'login'])->name('login.admin.post');
 
-// --- Rotas protegidas de administrador ---
+//  Rotas protegidas de administrador 
 Route::middleware('auth:administrador')->group(function () {
     Route::get('/admin/logout', [AdministradorController::class, 'logout'])->name('logout.admin');
 

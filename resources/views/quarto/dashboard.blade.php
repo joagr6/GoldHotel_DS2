@@ -24,7 +24,6 @@
 </head>
 <body>
 
-    <!-- Barra superior -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold text-uppercase" href="#">
@@ -43,7 +42,6 @@
         </div>
     </nav>
 
-    <!-- Conteúdo principal -->
     <div class="container mt-5">
         <h1 class="fw-bold mb-4 text-center">Lista de Quartos</h1>
 
@@ -61,7 +59,7 @@
                                 @if ($quarto->status === 'disponível')
                                     <span class="text-success fw-semibold">Disponível</span>
                                 @else
-                                    <span class="text-danger fw-semibold">{{ ucfirst($quarto->status) }}</span>
+                                    <span class="text fw-semibold">{{ ucfirst($quarto->status) }}</span>
                                 @endif
                             </p>
                             <a 
@@ -79,7 +77,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
