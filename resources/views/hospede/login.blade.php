@@ -84,14 +84,14 @@
     }
 </style>
 
-<a href="{{ url('/') }}" class="btn-back">← Voltar</a>
+<a href="{{ url('/') }}" class="btn-back">←</a>
 
 <div class="wave-background"></div>
 
 <div class="login-card">
     {{-- Logo do Hotel (carregada automaticamente) --}}
-    @if(file_exists(public_path('images/hotel_logo.png')))
-        <img src="{{ asset('images/hotel_logo.png') }}" alt="Logo do Hotel" class="logo">
+    @if(file_exists(public_path('images/hotel_logo.jpg')))
+        <img src="{{ asset('images/hotel_logo.jpg') }}" alt="Logo do Hotel" class="logo">
     @else
         <div class="logo" style="height:60px; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#888;">
             Logo do Hotel

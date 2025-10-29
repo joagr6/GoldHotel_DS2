@@ -103,7 +103,7 @@
     }
 
     .logo {
-        width: 140px;
+        width: 300px;
         height: auto;
         margin-bottom: 15px;
         object-fit: contain;
@@ -119,14 +119,14 @@
     }
 </style>
 
-<a href="{{ url('/') }}" class="btn-back">← Voltar</a>
+<a href="{{ url('/') }}" class="btn-back">←</a>
 <div class="wave-background"></div>
 
 <div class="register-wrapper">
     {{-- Lado esquerdo com logo e texto --}}
     <div class="register-left">
-        @if(file_exists(public_path('images/hotel_logo.png')))
-            <img src="{{ asset('images/hotel_logo.png') }}" alt="Logo do Hotel" class="logo">
+        @if(file_exists(public_path('images/hotel_logo.jpg')))
+            <img src="{{ asset('images/hotel_logo.jpg') }}" alt="Logo do Hotel" class="logo">
         @else
             <div class="logo" style="font-weight:bold; color:#888;">Hotel</div>
         @endif
