@@ -509,8 +509,10 @@ margin-left: 40px;
           </div>
           <ul>
               <li><a class="BotaoHome">HOME</a></li>
-              <li><a class="BotaoSobre" href="{{ route('hospede.login') }}">LOGIN</a></li>
+              <li><a class="BotaoSobre" href="{{ route('login.usuario', ['tipo' => 'hospede']) }}">Login Hóspede</a></li>
               <li><a class="BotaoAnimais" href="{{ route('hospede.cadastro') }}" >CADASTRAR-SE</a></li>
+              <li><a href="{{ route('login.usuario', ['tipo' => 'admin']) }}">Login Admin</a></li>
+
           </ul>
       </nav>
     </div>

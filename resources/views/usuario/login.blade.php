@@ -89,17 +89,20 @@
 <div class="wave-background"></div>
 
 <div class="login-card">
-    {{-- Logo do Hotel (carregada automaticamente) --}}
-    @if(file_exists(public_path('images/hotel_logo.jpg')))
-        <img src="{{ asset('images/hotel_logo.jpg') }}" alt="Logo do Hotel" class="logo">
-    @else
-        <div class="logo" style="height:60px; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#888;">
-            Logo do Hotel
-        </div>
-    @endif
+    {{-- Logo do Hotel --}}
+    <img src="{{ asset('images/hotel_logo.jpg') }}" alt="Logo do Hotel" class="logo">
 
-    <h4>Seja bem-vindo!</h4>
-    <p class="text-muted mb-4">Entre na sua conta</p>
+    <h4>
+        @if ($tipo === 'admin')
+            Login do Administrador
+        @else
+            Login do Hóspede
+        @endif
+    </h4>
+
+    <p class="text-muted mb-4">
+        {{ $tipo === 'admin' ? 'Acesse o painel de administração' : 'Entre na sua conta' }}
+    </p>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -115,8 +118,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('hospede.login.post') }}">
+    <form method="POST"
+          action="{{ $tipo === 'admin' ? route('login.admin.post') : route('hospede.login.post') }}">
         @csrf
+
         <div class="mb-3 text-start">
             <label class="form-label">CPF</label>
             <input type="text" name="cpf" class="form-control" placeholder="Digite seu CPF" required>
@@ -130,9 +135,16 @@
         <button type="submit" class="btn btn-primary w-100 mt-2">Entrar</button>
     </form>
 
-    <div class="mt-4">
-        <p class="text-muted">Ainda não tem conta?</p>
-        <a href="{{ route('hospede.cadastro') }}" class="btn btn-outline-primary w-100">Cadastrar-se</a>
-    </div>
+    @if ($tipo !== 'admin')
+        <div class="mt-4">
+            <p class="text-muted">Ainda não tem conta?</p>
+            <a href="{{ route('hospede.cadastro') }}" class="btn btn-outline-primary w-100">Cadastrar-se</a>
+        </div>
+    @endif
 </div>
-@endsection
+
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    

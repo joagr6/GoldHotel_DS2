@@ -51,3 +51,11 @@ Route::middleware('auth:administrador')->group(function () {
     Route::put('/quartos/{id}', [QuartoController::class, 'update'])->name('quartos.update');
     Route::delete('/quartos/{id}', [QuartoController::class, 'destroy'])->name('quartos.destroy');
 });
+
+
+Route::get('/login/{tipo}', function($tipo) {
+    if (!in_array($tipo, ['admin', 'hospede'])) {
+        abort(404);
+    }
+    return view('usuario.login', compact('tipo'));
+})->name('login.usuario');
