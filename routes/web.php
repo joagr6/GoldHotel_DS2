@@ -43,6 +43,7 @@ Route::post('/admin/login', [AdministradorController::class, 'login'])->name('lo
 //  Rotas protegidas de administrador 
 Route::middleware('auth:administrador')->group(function () {
     Route::get('/admin/logout', [AdministradorController::class, 'logout'])->name('logout.admin');
+    Route::get('/admin/dashboard', [AdministradorController::class, 'dashboard'])->name('dashboard.admin');
 
     Route::get('/cadastro-quarto', [QuartoController::class, 'create'])->name('quartos.create');
     Route::post('/cadastro-quarto', [QuartoController::class, 'store'])->name('quartos.store');
@@ -50,6 +51,8 @@ Route::middleware('auth:administrador')->group(function () {
     Route::get('/quartos/{id}/edit', [QuartoController::class, 'edit'])->name('quartos.edit');
     Route::put('/quartos/{id}', [QuartoController::class, 'update'])->name('quartos.update');
     Route::delete('/quartos/{id}', [QuartoController::class, 'destroy'])->name('quartos.destroy');
+
+    Route::get('/admin/hospedes', [HospedeController::class, 'index'])->name('hospede.list');
 });
 
 

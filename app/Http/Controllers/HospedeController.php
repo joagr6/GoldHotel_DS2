@@ -10,10 +10,18 @@ use App\Models\Hospede;
 class HospedeController extends Controller
 {
    
-    public function showLoginForm()
-    {
-        return view('hospede.login');
-    }
+   public function showLoginForm()
+{
+    return view('usuario.login', ['tipo' => 'hospede']);
+}
+
+public function index()
+{
+    $hospedes = Hospede::all();
+    return view('hospede.list', compact('hospedes'));
+}
+
+
 
     public function login(Request $request)
     {
@@ -78,7 +86,8 @@ public function logout(Request $request)
             'senha' => Hash::make($request->senha),
         ]);
 
-        return redirect()->route('hospede.login')->with('success', 'Cadastro realizado com sucesso!');
+        return redirect()->route('login.usuario', ['tipo' => 'hospede'])
+        ->with('success', 'Cadastro realizado com sucesso!');
     }
 
     public function meusDados()
