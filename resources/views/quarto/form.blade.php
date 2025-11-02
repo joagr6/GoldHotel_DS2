@@ -1,12 +1,12 @@
 @extends('base')
 
-@section('title', 'Cadastro de Quarto')
+@section('title', isset($quarto) ? 'Editar Quarto' : 'Cadastro de Quarto')
 
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Cadastro de Quarto</h4>
+            <h4 class="mb-0">{{ isset($quarto) ? 'Editar Quarto' : 'Cadastro de Quarto' }}</h4>
         </div>
 
         <div class="card-body">
@@ -22,9 +22,16 @@
                 </div>
             @endif
 
-            {{-- Formulário de cadastro --}}
-            <form action="{{ route('quartos.store') }}" method="POST" enctype="multipart/form-data">
+            {{-- Formulário dinâmico --}}
+            <form 
+                action="{{ isset($quarto) ? route('quartos.update', $quarto->id) : route('quartos.store') }}" 
+                method="POST" 
+                enctype="multipart/form-data"
+            >
                 @csrf
+                @if(isset($quarto))
+                    @method('PUT')
+                @endif
 
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -34,20 +41,22 @@
                             name="capacidade" 
                             id="capacidade" 
                             class="form-control" 
-                            value="{{ old('capacidade') }}" 
-                            required>
+                            value="{{ old('capacidade', $quarto->capacidade ?? '') }}" 
+                            required
+                        >
                     </div>
 
                     <div class="col-md-6">
                         <label for="valorDiaria" class="form-label">Valor da Diária (R$)</label>
                         <input 
                             type="number" 
-                            step="0.01" 
                             name="valorDiaria" 
                             id="valorDiaria" 
                             class="form-control" 
-                            value="{{ old('valorDiaria') }}" 
-                            required>
+                            step="0.01"
+                            value="{{ old('valorDiaria', $quarto->valorDiaria ?? '') }}" 
+                            required
+                        >
                     </div>
                 </div>
 
@@ -56,9 +65,9 @@
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="form-select" required>
                             <option value="">Selecione...</option>
-                            <option value="Disponível" {{ old('status') == 'Disponível' ? 'selected' : '' }}>Disponível</option>
-                            <option value="Ocupado" {{ old('status') == 'Ocupado' ? 'selected' : '' }}>Ocupado</option>
-                            <option value="Em manutenção" {{ old('status') == 'Em manutenção' ? 'selected' : '' }}>Em manutenção</option>
+                            <option value="Disponível" {{ old('status', $quarto->status ?? '') == 'Disponível' ? 'selected' : '' }}>Disponível</option>
+                            <option value="Ocupado" {{ old('status', $quarto->status ?? '') == 'Ocupado' ? 'selected' : '' }}>Ocupado</option>
+                            <option value="Em manutenção" {{ old('status', $quarto->status ?? '') == 'Em manutenção' ? 'selected' : '' }}>Em manutenção</option>
                         </select>
                     </div>
 
@@ -69,8 +78,9 @@
                             name="tipoQuarto" 
                             id="tipoQuarto" 
                             class="form-control" 
-                            value="{{ old('tipoQuarto') }}" 
-                            required>
+                            value="{{ old('tipoQuarto', $quarto->tipoQuarto ?? '') }}" 
+                            required
+                        >
                     </div>
                 </div>
 
@@ -81,12 +91,27 @@
                         name="imagem" 
                         id="imagem" 
                         class="form-control" 
-                        accept="image/*">
+                        accept="image/*"
+                    >
+
+                    {{-- Se estiver editando e já houver imagem --}}
+                    @if(isset($quarto) && $quarto->imagem)
+                        <div class="mt-3">
+                            <p>Imagem atual:</p>
+                            <img 
+                                src="{{ asset('storage/' . $quarto->imagem) }}" 
+                                alt="Imagem do quarto" 
+                                style="max-width: 200px; border-radius: 8px;"
+                            >
+                        </div>
+                    @endif
                 </div>
 
                 <div class="text-end">
-                    <button type="submit" class="btn btn-success">Cadastrar Quarto</button>
-                    <a href="{{ route('login.admin') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-success">
+                        {{ isset($quarto) ? 'Atualizar' : 'Cadastrar' }}
+                    </button>
+                    <a href="{{ route('quartos.index') }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

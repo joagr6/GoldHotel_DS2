@@ -15,9 +15,19 @@ class HospedeController extends Controller
     return view('usuario.login', ['tipo' => 'hospede']);
 }
 
-public function index()
+public function index(Request $request)
 {
-    $hospedes = Hospede::all();
+    $tipo = $request->input('tipo');
+    $valor = $request->input('valor');
+
+    $query = Hospede::query();
+
+    if ($tipo && $valor) {
+        $query->where($tipo, 'like', '%' . $valor . '%');
+    }
+
+    $hospedes = $query->get();
+
     return view('hospede.list', compact('hospedes'));
 }
 

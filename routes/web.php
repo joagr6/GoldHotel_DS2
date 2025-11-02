@@ -48,6 +48,7 @@ Route::middleware('auth:administrador')->group(function () {
     Route::get('/cadastro-quarto', [QuartoController::class, 'create'])->name('quartos.create');
     Route::post('/cadastro-quarto', [QuartoController::class, 'store'])->name('quartos.store');
     Route::get('/lista-quartos', [QuartoController::class, 'index'])->name('quartos.index');
+    
     Route::get('/quartos/{id}/edit', [QuartoController::class, 'edit'])->name('quartos.edit');
     Route::put('/quartos/{id}', [QuartoController::class, 'update'])->name('quartos.update');
     Route::delete('/quartos/{id}', [QuartoController::class, 'destroy'])->name('quartos.destroy');
