@@ -53,7 +53,21 @@ public function index(Request $request)
 
  public function dashboard()
 {
-    return view('hospede.dashboard');
+    $hospede = Auth::guard('hospede')->user();
+
+    $ativas = \App\Models\Reserva::with('quarto')
+        ->where('hospede_id', optional($hospede)->id)
+        ->whereIn('status', ['Ativa', 'ativa'])
+        ->orderByDesc('data_entrada')
+        ->get();
+
+    $passadas = \App\Models\Reserva::with('quarto')
+        ->where('hospede_id', optional($hospede)->id)
+        ->whereIn('status', ['Finalizada', 'finalizada', 'Cancelada', 'cancelada'])
+        ->orderByDesc('data_entrada')
+        ->get();
+
+    return view('hospede.dashboard', compact('ativas', 'passadas'));
 }
 
 public function logout(Request $request)

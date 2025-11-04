@@ -38,7 +38,7 @@
     <div class="container mt-4">
         <h1 class="fw-bold">Reservas</h1>
         <div class="bg-white p-4 rounded shadow-sm">
-            <a href="{{ route('quartos.index') }}"><button>Listar Reservas</button></a>
+            <a href="{{ route('admin.reservas.index') }}"><button>Listar Reservas</button></a>
 
         </div>
     </div>

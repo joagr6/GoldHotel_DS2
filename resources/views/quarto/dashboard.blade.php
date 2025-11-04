@@ -62,7 +62,7 @@
                                     <span class="text fw-semibold">{{ ucfirst($quarto->status) }}</span>
                                 @endif
                             </p>
-                            <a 
+                            <a href="{{ $quarto->status === 'disponível' ? route('reserva.create', ['quarto_id' => $quarto->id]) : '#' }}"
                                class="btn btn-primary w-100 {{ $quarto->status !== 'disponível' ? 'disabled' : '' }}">
                                 Reservar
                             </a>

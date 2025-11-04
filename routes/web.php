@@ -54,6 +54,9 @@ Route::middleware('auth:administrador')->group(function () {
     Route::delete('/quartos/{id}', [QuartoController::class, 'destroy'])->name('quartos.destroy');
 
     Route::get('/admin/hospedes', [HospedeController::class, 'index'])->name('hospede.list');
+
+    // Reservas - administração
+    Route::get('/admin/reservas', [ReservaController::class, 'adminIndex'])->name('admin.reservas.index');
 });
 
 
