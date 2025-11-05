@@ -196,7 +196,7 @@
             </div>
 
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ route('hospede.login') }}" class="btn btn-secondary">Já tenho conta</a>
+                <a href="{{ route('login.usuario', ['tipo' => 'hospede']) }}"  class="btn btn-secondary">Já tenho conta</a>
                 <button type="submit" class="btn btn-primary">Cadastrar</button>
             </div>
         </form>

@@ -62,12 +62,30 @@
       overflow: hidden;
     }
 
+<<<<<<< HEAD
     .bannerPrincipal img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       filter: brightness(70%);
     }
+=======
+    <div class="partedahome">
+      <nav>
+          <div class="logo"> GOLD HOTEL </div>
+          <div class="menu-btn">
+              <i class="fas fa-bars"></i>
+          </div>
+          <ul>
+              <li><a class="BotaoHome">HOME</a></li>
+              <li><a class="BotaoSobre" href="{{ route('login.usuario', ['tipo' => 'hospede']) }}">Login Hóspede</a></li>
+              <li><a class="BotaoAnimais" href="{{ route('hospede.cadastro') }}" >CADASTRAR-SE</a></li>
+              <li><a href="{{ route('login.usuario', ['tipo' => 'admin']) }}">Login Admin</a></li>
+
+          </ul>
+      </nav>
+    </div>
+>>>>>>> 3f3041b717382e250bd01b9453b23b446d0fbfc7
 
     .textoBanner {
       position: absolute;

@@ -10,10 +10,28 @@ use App\Models\Hospede;
 class HospedeController extends Controller
 {
    
-    public function showLoginForm()
-    {
-        return view('hospede.login');
+   public function showLoginForm()
+{
+    return view('usuario.login', ['tipo' => 'hospede']);
+}
+
+public function index(Request $request)
+{
+    $tipo = $request->input('tipo');
+    $valor = $request->input('valor');
+
+    $query = Hospede::query();
+
+    if ($tipo && $valor) {
+        $query->where($tipo, 'like', '%' . $valor . '%');
     }
+
+    $hospedes = $query->get();
+
+    return view('hospede.list', compact('hospedes'));
+}
+
+
 
     public function login(Request $request)
     {
@@ -35,7 +53,21 @@ class HospedeController extends Controller
 
  public function dashboard()
 {
-    return view('hospede.dashboard');
+    $hospede = Auth::guard('hospede')->user();
+
+    $ativas = \App\Models\Reserva::with('quarto')
+        ->where('hospede_id', optional($hospede)->id)
+        ->whereIn('status', ['Ativa', 'ativa'])
+        ->orderByDesc('data_entrada')
+        ->get();
+
+    $passadas = \App\Models\Reserva::with('quarto')
+        ->where('hospede_id', optional($hospede)->id)
+        ->whereIn('status', ['Finalizada', 'finalizada', 'Cancelada', 'cancelada'])
+        ->orderByDesc('data_entrada')
+        ->get();
+
+    return view('hospede.dashboard', compact('ativas', 'passadas'));
 }
 
 public function logout(Request $request)
@@ -78,7 +110,8 @@ public function logout(Request $request)
             'senha' => Hash::make($request->senha),
         ]);
 
-        return redirect()->route('hospede.login')->with('success', 'Cadastro realizado com sucesso!');
+        return redirect()->route('login.usuario', ['tipo' => 'hospede'])
+        ->with('success', 'Cadastro realizado com sucesso!');
     }
 
     public function meusDados()
