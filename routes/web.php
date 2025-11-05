@@ -11,7 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-//  Login e cadastro de hóspede 
+//  Login e cadastro de hóspede
+ 
 Route::get('/login-hospede', [HospedeController::class, 'showLoginForm'])->name('hospede.login');
 Route::post('/login-hospede', [HospedeController::class, 'login'])->name('hospede.login.post');
 Route::get('/logout-hospede', [HospedeController::class, 'logout'])->name('hospede.logout');
