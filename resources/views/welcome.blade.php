@@ -53,39 +53,22 @@
       color: #000;
     }
 
-    /* BANNER */
-    .bannerPrincipal {
-      margin-top: 80px;
-      position: relative;
-      width: 100%;
-      height: 550px;
-      overflow: hidden;
-    }
+/* BANNER */
+.bannerPrincipal {
+  margin-top: 80px;
+  position: relative;
+  width: 100%;
+  height: 70vh; /* altura reduzida, ocupa 70% da altura da tela */
+  overflow: hidden;
+}
 
-<<<<<<< HEAD
-    .bannerPrincipal img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(70%);
-    }
-=======
-    <div class="partedahome">
-      <nav>
-          <div class="logo"> GOLD HOTEL </div>
-          <div class="menu-btn">
-              <i class="fas fa-bars"></i>
-          </div>
-          <ul>
-              <li><a class="BotaoHome">HOME</a></li>
-              <li><a class="BotaoSobre" href="{{ route('login.usuario', ['tipo' => 'hospede']) }}">Login Hóspede</a></li>
-              <li><a class="BotaoAnimais" href="{{ route('hospede.cadastro') }}" >CADASTRAR-SE</a></li>
-              <li><a href="{{ route('login.usuario', ['tipo' => 'admin']) }}">Login Admin</a></li>
+.bannerPrincipal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* mantém proporção e cobre toda a largura */
+  filter: brightness(75%);
+}
 
-          </ul>
-      </nav>
-    </div>
->>>>>>> 3f3041b717382e250bd01b9453b23b446d0fbfc7
 
     .textoBanner {
       position: absolute;
@@ -358,8 +341,8 @@
 <!-- ====== MAPA ====== -->
 <div class="mapaContainer">
   <h3>Localização do Gold Hotel</h3>
-  <iframe 
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.268882757548!2d-43.18236522468104!3d-22.903539038630574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f5b5f8ef8d1%3A0xd7a6bba2a91d85d0!2sCopacabana%20Beach!5e0!3m2!1spt-BR!2sbr!4v1694469808906!5m2!1spt-BR!2sbr" 
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.268882757548!2d-43.18236522468104!3d-22.903539038630574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f5b5f8ef8d1%3A0xd7a6bba2a91d85d0!2sCopacabana%20Beach!5e0!3m2!1spt-BR!2sbr!4v1694469808906!5m2!1spt-BR!2sbr"
     allowfullscreen=""
     loading="lazy"
     referrerpolicy="no-referrer-when-downgrade">
