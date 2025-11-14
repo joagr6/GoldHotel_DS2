@@ -8,6 +8,7 @@ use App\Models\Administrador;
 use App\Models\Reserva;
 use App\Models\Quarto;
 use App\Models\Hospede;
+use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class AdministradorController extends Controller
 {
@@ -43,18 +44,35 @@ class AdministradorController extends Controller
     }
 
     // DASHBOARD DO ADMINISTRADOR
-   public function dashboard()
-{
-    // Quantidade total de reservas
-    $totalReservas = Reserva::count();
+    public function dashboard()
+    {
+        // Dados
+        $totalReservas = Reserva::count();
+        $quartosDisponiveis = Quarto::where('status', 'disponivel')->count();
+        $totalHospedes = Hospede::count();
 
-    // Quartos disponíveis (ajuste se o nome do campo for diferente)
-    $quartosDisponiveis = Quarto::where('status', 'disponivel')->count();
+        // Gráfico 1 - Reservas
+        $graficoReservas = (new LarapexChart)->barChart()
+            ->setTitle('Reservas Totais')
+            ->addData('Reservas', [$totalReservas])
+            ->setXAxis(['Total']);
 
-    $totalHospedes = Hospede::count();
+        // Gráfico 2 - Quartos Disponíveis
+        $graficoQuartos = (new LarapexChart)->barChart()
+            ->setTitle('Quartos Disponíveis')
+            ->addData('Disponíveis', [$quartosDisponiveis])
+            ->setXAxis(['Quartos']);
 
-    // Carrega a view correta
-    return view('administrador.dashboard', compact('totalReservas', 'quartosDisponiveis','totalHospedes'));
-}
+        // Gráfico 3 - Hóspedes
+        $graficoHospedes = (new LarapexChart)->barChart()
+            ->setTitle('Total de Hóspedes')
+            ->addData('Hóspedes', [$totalHospedes])
+            ->setXAxis(['Total']);
 
+        return view('administrador.dashboard', compact(
+            'graficoReservas',
+            'graficoQuartos',
+            'graficoHospedes'
+        ));
+    }
 }

@@ -41,6 +41,7 @@
                     @endif
                     <div class="card-body">
                         <h5 class="card-title text-primary">{{ $quarto->tipoQuarto }}</h5>
+                        
 
                         <p class="card-text mb-1">
                             <strong>Capacidade:</strong> {{ $quarto->capacidade }}

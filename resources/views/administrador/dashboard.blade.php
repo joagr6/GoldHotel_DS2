@@ -6,7 +6,7 @@
     <title>Dashboard do Administrador - Gold Hotel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <style>
         body {
@@ -87,27 +87,24 @@
     <div class="container mt-4">
         <div class="row g-4">
 
-            <!-- Gráfico de Reservas -->
             <div class="col-md-4">
                 <div class="grafico-card">
                     <h5 class="text-center">Reservas Totais</h5>
-                    <canvas id="graficoReservas"></canvas>
+                    {!! $graficoReservas->container() !!}
                 </div>
             </div>
 
-            <!-- Gráfico de Quartos Disponíveis -->
             <div class="col-md-4">
                 <div class="grafico-card">
                     <h5 class="text-center">Quartos Disponíveis</h5>
-                    <canvas id="graficoQuartos"></canvas>
+                    {!! $graficoQuartos->container() !!}
                 </div>
             </div>
 
-            <!-- Gráfico de Hóspedes -->
             <div class="col-md-4">
                 <div class="grafico-card">
                     <h5 class="text-center">Total de Hóspedes</h5>
-                    <canvas id="graficoHospedes"></canvas>
+                    {!! $graficoHospedes->container() !!}
                 </div>
             </div>
 
@@ -117,53 +114,9 @@
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        const totalReservas = {{ $totalReservas }};
-        const quartosDisponiveis = {{ $quartosDisponiveis }};
-        const totalHospedes = {{ $totalHospedes }};
-
-        // Gráfico 1 - Reservas
-        new Chart(document.getElementById('graficoReservas'), {
-            type: 'bar',
-            data: {
-                labels: ['Reservas'],
-                datasets: [{
-                    label: 'Total',
-                    data: [totalReservas],
-                    backgroundColor: '#0d6efd'
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
-
-        // Gráfico 2 - Quartos Disponíveis
-        new Chart(document.getElementById('graficoQuartos'), {
-            type: 'bar',
-            data: {
-                labels: ['Disponíveis'],
-                datasets: [{
-                    label: 'Quartos',
-                    data: [quartosDisponiveis],
-                    backgroundColor: '#198754'
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
-
-        // Gráfico 3 - Hóspedes
-        new Chart(document.getElementById('graficoHospedes'), {
-            type: 'bar',
-            data: {
-                labels: ['Hóspedes'],
-                datasets: [{
-                    label: 'Total',
-                    data: [totalHospedes],
-                    backgroundColor: '#ffc107'
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
-    </script>
+    {{ $graficoReservas->script() }}
+    {{ $graficoQuartos->script() }}
+    {{ $graficoHospedes->script() }}
 
 </body>
 </html>
