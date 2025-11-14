@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard do Administrador - Gold Hotel</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
-            padding-top: 70px; 
+            padding-top: 70px;
             background-color: #f8f9fa;
         }
         .navbar-brand span {
@@ -16,10 +19,26 @@
             font-weight: normal;
             color: #dcdcdc;
         }
+        .grafico-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            transition: 0.2s ease-in-out;
+        }
+        .grafico-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+        }
+        h5 {
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
 
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold text-uppercase" href="#">
@@ -28,37 +47,123 @@
             </a>
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="{{ route('dashboard.admin') }}" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Sair</a></li>
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.admin') }}" class="nav-link active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('logout.admin') }}" class="nav-link">Sair</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- RESERVAS -->
     <div class="container mt-4">
         <h1 class="fw-bold">Reservas</h1>
         <div class="bg-white p-4 rounded shadow-sm">
             <a href="{{ route('admin.reservas.index') }}"><button>Listar Reservas</button></a>
-
         </div>
     </div>
 
+    <!-- QUARTOS -->
     <div class="container mt-4">
         <h1 class="fw-bold">Quartos</h1>
-
         <div class="bg-white p-4 rounded shadow-sm">
             <a href="{{ route('quartos.index') }}"><button>Listar Quartos</button></a>
             <a href="{{ route('quartos.create') }}"><button>Cadastrar Quartos</button></a>
         </div>
     </div>
-        <div class="container mt-4">
-        <h1 class="fw-bold">Hóspedes</h1>
 
+    <!-- HÓSPEDES -->
+    <div class="container mt-4 mb-5">
+        <h1 class="fw-bold">Hóspedes</h1>
         <div class="bg-white p-4 rounded shadow-sm">
             <a href="{{ route('hospede.list') }}"><button>Listar Hóspedes</button></a>
         </div>
     </div>
 
+    <!-- GRÁFICOS -->
+    <div class="container mt-4">
+        <div class="row g-4">
+
+            <!-- Gráfico de Reservas -->
+            <div class="col-md-4">
+                <div class="grafico-card">
+                    <h5 class="text-center">Reservas Totais</h5>
+                    <canvas id="graficoReservas"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Quartos Disponíveis -->
+            <div class="col-md-4">
+                <div class="grafico-card">
+                    <h5 class="text-center">Quartos Disponíveis</h5>
+                    <canvas id="graficoQuartos"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Hóspedes -->
+            <div class="col-md-4">
+                <div class="grafico-card">
+                    <h5 class="text-center">Total de Hóspedes</h5>
+                    <canvas id="graficoHospedes"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const totalReservas = {{ $totalReservas }};
+        const quartosDisponiveis = {{ $quartosDisponiveis }};
+        const totalHospedes = {{ $totalHospedes }};
+
+        // Gráfico 1 - Reservas
+        new Chart(document.getElementById('graficoReservas'), {
+            type: 'bar',
+            data: {
+                labels: ['Reservas'],
+                datasets: [{
+                    label: 'Total',
+                    data: [totalReservas],
+                    backgroundColor: '#0d6efd'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // Gráfico 2 - Quartos Disponíveis
+        new Chart(document.getElementById('graficoQuartos'), {
+            type: 'bar',
+            data: {
+                labels: ['Disponíveis'],
+                datasets: [{
+                    label: 'Quartos',
+                    data: [quartosDisponiveis],
+                    backgroundColor: '#198754'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // Gráfico 3 - Hóspedes
+        new Chart(document.getElementById('graficoHospedes'), {
+            type: 'bar',
+            data: {
+                labels: ['Hóspedes'],
+                datasets: [{
+                    label: 'Total',
+                    data: [totalHospedes],
+                    backgroundColor: '#ffc107'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+
 </body>
 </html>
