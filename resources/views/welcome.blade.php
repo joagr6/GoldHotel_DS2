@@ -195,6 +195,18 @@
       height: 5px;
       background-color: #f7f4ef;
     }
+    .loginAdm{
+      text-align: left;
+      margin-top: -32px;
+    }
+    .loginAdm a{
+      text-decoration: none;
+      color: #000000ff;
+    }
+     .loginAdm a:hover{
+      text-decoration: none;
+      color: #000000ff;
+    }
   </style>
 </head>
 <body>
@@ -203,12 +215,7 @@
   <div class="logo">GOLD HOTEL</div>
   <ul>
     <li><a href="{{ route('home') }}">Home</a></li>
-    @if (Route::has('login'))
-      <li><a href="{{ route('login') }}">Login Hóspede</a></li>
-      <li><a href="{{ route('login') }}">Login Admin</a></li>
-    @else
-      <li><a href="#">Login</a></li>
-    @endif
+     <li><a href="/login-hospede">Login</a></li>
     @if (Route::has('hospede.cadastro'))
       <li><a href="{{ route('hospede.cadastro') }}">Cadastrar-se</a></li>
     @endif
@@ -352,6 +359,7 @@
 <footer>
   <div class="copyright mt-4">
     <p>&copy; 2025 Gold Hotel - Todos os direitos reservados.</p>
+    <li class="loginAdm"><a href="/admin/login">Login Adm</a></li>
   </div>
 </footer>
 

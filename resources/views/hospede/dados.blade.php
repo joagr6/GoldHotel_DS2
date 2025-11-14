@@ -5,24 +5,13 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-black text-white">
             <h4 class="mb-0">Meus Dados</h4>
         </div>
 
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <strong>Ops!</strong> Há alguns erros no formulário:<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $erro)
-                            <li>{{ $erro }}</li>
-                        @endforeach
-                    </ul>
-                </div>
             @endif
 
             <form action="{{ route('hospede.update', $hospede->id) }}" method="POST">
@@ -82,10 +71,7 @@
                     <label for="senha">Nova Senha (opcional)</label>
                     <input type="password" name="senha" id="senha" class="form-control">
                 </div>
-                <div class="form-group">
-                    <label for="senha_confirmation">Confirmar Senha</label>
-                    <input type="password" name="senha_confirmation" id="senha_confirmation" class="form-control">
-                </div>
+               
 
                 <div class="text-end">
                     <button type="submit" class="btn btn-success">Salvar Alterações</button>
