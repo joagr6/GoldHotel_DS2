@@ -6,6 +6,7 @@ use App\Models\Reserva;
 use App\Models\Quarto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservaController extends Controller
 {
@@ -28,11 +29,12 @@ class ReservaController extends Controller
 
         if ($quartoId) {
             $quartoSelecionado = Quarto::where('id', $quartoId)
-                ->where('status', 'disponível')
+                ->whereRaw('LOWER(status) = ?', ['disponível'])
                 ->firstOrFail();
         }
 
-        $quartosDisponiveis = Quarto::where('status', 'disponível')->get();
+        // Busca quartos disponíveis (status disponível, sem verificar reservas ainda)
+        $quartosDisponiveis = Quarto::whereRaw('LOWER(status) = ?', ['disponível'])->get();
 
         return view('reserva.create', [
             'quartoSelecionado' => $quartoSelecionado,
@@ -54,6 +56,37 @@ class ReservaController extends Controller
             'quarto_id.required' => 'Selecione um quarto',
         ]);
 
+        $quarto = Quarto::findOrFail($request->quarto_id);
+
+        // Verifica se o quarto está disponível
+        if (strtolower($quarto->status) !== 'disponível') {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['quarto_id' => 'Este quarto não está disponível para reserva.']);
+        }
+
+        // Verifica conflitos de datas com reservas ativas do mesmo quarto
+        $dataEntrada = $request->data_entrada;
+        $dataSaida = $request->data_saida;
+
+        $conflito = Reserva::where('quarto_id', $request->quarto_id)
+            ->whereIn('status', ['Ativa', 'ativa'])
+            ->where(function($query) use ($dataEntrada, $dataSaida) {
+                $query->whereBetween('data_entrada', [$dataEntrada, $dataSaida])
+                      ->orWhereBetween('data_saida', [$dataEntrada, $dataSaida])
+                      ->orWhere(function($q) use ($dataEntrada, $dataSaida) {
+                          $q->where('data_entrada', '<=', $dataEntrada)
+                            ->where('data_saida', '>=', $dataSaida);
+                      });
+            })
+            ->exists();
+
+        if ($conflito) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['data_entrada' => 'Este quarto já possui uma reserva ativa no período selecionado.']);
+        }
+
         $reserva = Reserva::create([
             'data_entrada' => $request->data_entrada,
             'data_saida'   => $request->data_saida,
@@ -61,11 +94,6 @@ class ReservaController extends Controller
             'hospede_id'   => Auth::guard('hospede')->id(),
             'quarto_id'    => $request->quarto_id,
         ]);
-
-        $quarto = Quarto::find($request->quarto_id);
-        if ($quarto) {
-            $quarto->update(['status' => 'indisponível']);
-        }
 
         return redirect()->route('hospede.dashboard')
             ->with('success', 'Reserva registrada com sucesso!');
@@ -100,11 +128,37 @@ class ReservaController extends Controller
         $reserva->status = 'Cancelada';
         $reserva->save();
 
-        $quarto = Quarto::find($reserva->quarto_id);
-        if ($quarto) {
-            $quarto->update(['status' => 'disponível']);
-        }
+        // Não precisa mudar o status do quarto automaticamente
+        // O quarto pode ter outras reservas ativas
+        // O status do quarto deve ser gerenciado separadamente pelo admin
 
         return redirect()->back()->with('success', 'Reserva cancelada com sucesso!');
+    }
+
+    /**
+     * Gera o comprovante de reserva em PDF
+     */
+    public function comprovante($id)
+    {
+        $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
+            ->with(['quarto', 'hospede'])
+            ->findOrFail($id);
+
+        // Calcula o número de diárias
+        $dataEntrada = \Carbon\Carbon::parse($reserva->data_entrada);
+        $dataSaida = \Carbon\Carbon::parse($reserva->data_saida);
+        $dias = $dataEntrada->diffInDays($dataSaida);
+        $dias = $dias > 0 ? $dias : 1; // Mínimo 1 dia
+        
+        // Calcula o valor total
+        $valorTotal = $reserva->quarto->valorDiaria * $dias;
+
+        $pdf = Pdf::loadView('reserva.comprovante', [
+            'reserva' => $reserva,
+            'dias' => $dias,
+            'valorTotal' => $valorTotal,
+        ]);
+
+        return $pdf->download('comprovante-reserva-' . $reserva->id . '.pdf');
     }
 }

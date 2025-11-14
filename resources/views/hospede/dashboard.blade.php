@@ -29,6 +29,12 @@
 
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge bg-success">{{ ucfirst($res->status) }}</span>
+                            
+                            <a href="{{ route('reserva.comprovante', $res->id) }}" 
+                               class="btn btn-outline-primary btn-sm" 
+                               target="_blank">
+                                📄 Comprovante
+                            </a>
 
                             <form method="POST"
                                   action="{{ route('reserva.destroy', $res->id) }}"
@@ -58,14 +64,22 @@
         @if(isset($passadas) && $passadas->count())
             <div class="list-group">
                 @foreach ($passadas as $res)
-                    <div class="list-group-item d-flex justify-content-between">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-semibold">{{ optional($res->quarto)->tipoQuarto }}</div>
                             <small>{{ \Carbon\Carbon::parse($res->data_entrada)->format('d/m/Y') }} -
                                    {{ \Carbon\Carbon::parse($res->data_saida)->format('d/m/Y') }}</small>
                         </div>
 
-                        <span class="badge bg-secondary align-self-center">{{ ucfirst($res->status) }}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary">{{ ucfirst($res->status) }}</span>
+                            
+                            <a href="{{ route('reserva.comprovante', $res->id) }}" 
+                               class="btn btn-outline-primary btn-sm" 
+                               target="_blank">
+                                📄 Comprovante
+                            </a>
+                        </div>
                     </div>
                 @endforeach
             </div>

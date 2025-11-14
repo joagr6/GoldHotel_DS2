@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Quarto extends Model
 {
     protected $fillable = ['capacidade', 'valorDiaria', 'status', 'tipoQuarto', 'imagem'];
+
+    /**
+     * Relação com reservas
+     * Um quarto pode ter várias reservas.
+     */
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
 };

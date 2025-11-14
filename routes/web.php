@@ -26,6 +26,7 @@ Route::put('/hospede/{id}', [HospedeController::class, 'update'])->name('hospede
 Route::middleware('auth:hospede')->group(function () {
     Route::get('/hospede/dashboard', [HospedeController::class, 'dashboard'])->name('hospede.dashboard');
     Route::get('/quarto/quartos', [QuartoController::class, 'listaHospede'])->name('quarto.dashboard');
+    Route::get('/reserva/comprovante/{id}', [ReservaController::class, 'comprovante'])->name('reserva.comprovante');
 });
 
 //  Rotas de reservas 

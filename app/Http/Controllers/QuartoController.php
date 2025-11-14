@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quarto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuartoController extends Controller
 {
@@ -93,7 +94,14 @@ class QuartoController extends Controller
         ]);
 
         if ($request->hasFile('imagem')) {
+            // Remove a imagem antiga se existir
+            if ($quarto->imagem && Storage::disk('public')->exists($quarto->imagem)) {
+                Storage::disk('public')->delete($quarto->imagem);
+            }
             $validated['imagem'] = $request->file('imagem')->store('quartos', 'public');
+        } else {
+            // Preserva a imagem antiga se não houver nova imagem
+            $validated['imagem'] = $quarto->imagem;
         }
 
         $quarto->update($validated);

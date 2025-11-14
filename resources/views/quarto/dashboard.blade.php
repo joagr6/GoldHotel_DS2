@@ -28,6 +28,17 @@
         @forelse ($quartos as $quarto)
             <div class="col-12 col-sm-6 col-md-4">
                 <div class="card shadow-sm h-100">
+                    @if ($quarto->imagem)
+                        <img src="{{ asset('storage/' . $quarto->imagem) }}" 
+                             class="card-img-top" 
+                             alt="{{ $quarto->tipoQuarto }}"
+                             style="height: 200px; object-fit: cover;">
+                    @else
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                             style="height: 200px;">
+                            <span class="text-white">Sem imagem</span>
+                        </div>
+                    @endif
                     <div class="card-body">
                         <h5 class="card-title text-primary">{{ $quarto->tipoQuarto }}</h5>
 
@@ -42,15 +53,15 @@
 
                         <p class="card-text mb-3">
                             <strong>Status:</strong>
-                            @if ($quarto->status === 'disponível')
+                            @if (strtolower($quarto->status) === 'disponível')
                                 <span class="text-success fw-semibold">Disponível</span>
                             @else
                                 <span class="text-danger fw-semibold">{{ ucfirst($quarto->status) }}</span>
                             @endif
                         </p>
 
-                        <a href="{{ $quarto->status === 'disponível' ? route('reserva.create', ['quarto_id' => $quarto->id]) : '#' }}"
-                           class="btn btn-primary w-100 {{ $quarto->status !== 'disponível' ? 'disabled' : '' }}">
+                        <a href="{{ strtolower($quarto->status) === 'disponível' ? route('reserva.create', ['quarto_id' => $quarto->id]) : '#' }}"
+                           class="btn btn-primary w-100 {{ strtolower($quarto->status) !== 'disponível' ? 'disabled' : '' }}">
                             Reservar
                         </a>
 
