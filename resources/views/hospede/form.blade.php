@@ -1,4 +1,4 @@
-@extends('base')
+@extends('base_public')
 
 @section('title', 'Cadastro de Hóspede')
 

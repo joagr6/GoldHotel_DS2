@@ -3,7 +3,28 @@
 @section('title', isset($quarto) ? 'Editar Quarto' : 'Cadastro de Quarto')
 
 @section('content')
-
+<style>
+    .btn-back {
+        position: fixed;
+        top: 90px;
+        left: 20px;
+        z-index: 3000;
+        background: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(3px);
+        color: black;
+        border: 1px solid white;
+        border-radius: 8px;
+        padding: 6px 14px;
+        text-decoration: none;
+        transition: 0.3s;
+        font-weight: 600;
+    }
+     .btn-back:hover {
+        background: white;
+        color: #000000ff;
+    }
+    </style>
+    <a href="{{ url('/admin/dashboard') }}" class="btn-back">← </a>
 <div class="mb-4">
     <h1 class="fw-bold">{{ isset($quarto) ? 'Editar Quarto' : 'Cadastro de Quarto' }}</h1>
 </div>
