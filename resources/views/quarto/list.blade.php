@@ -1,34 +1,15 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Quartos</title>
+@extends('administrador.base')
 
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('title', 'Listagem de Quartos')
 
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body class="bg-light p-4">
+@section('content')
 
-<div class="container">
-    {{-- 🔙 Botões superiores --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <a href="{{ url('/admin/dashboard') }}" class="btn btn-secondary">
-                <i class="fa-solid fa-arrow-left"></i> Voltar
-            </a>
-        </div>
-        <div>
-            <a href="{{ route('quartos.create') }}" class="btn btn-success">
-                <i class="fa-solid fa-plus"></i> Novo Quarto
-            </a>
-        </div>
+        <h1 class="fw-bold mb-0">Listagem de Quartos</h1>
+        <a href="{{ route('quartos.create') }}" class="btn btn-success">
+            <i class="fa-solid fa-plus"></i> Novo Quarto
+        </a>
     </div>
-
-    <h3 class="mb-4">Listagem de Quartos (Administradores)</h3>
 
     {{-- 🔍 Formulário de pesquisa --}}
     <form method="GET" action="{{ route('quartos.index') }}" class="row g-3 mb-4 align-items-end">
@@ -60,10 +41,6 @@
         </div>
     </form>
 
-    {{-- ✅ Mensagens de feedback --}}
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
     {{-- 🛏️ Tabela de quartos --}}
     @if ($quartos->isEmpty())
@@ -120,9 +97,6 @@
             </table>
         </div>
     @endif
-</div>
 
-{{-- Bootstrap JS --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
+

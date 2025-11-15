@@ -36,9 +36,9 @@ class ReservaController extends Controller
         // Busca quartos disponíveis (status disponível, sem verificar reservas ainda)
         $quartosDisponiveis = Quarto::whereRaw('LOWER(status) = ?', ['disponível'])->get();
 
-        return view('reserva.create', [
+        return view('reserva.form', [
             'quartoSelecionado' => $quartoSelecionado,
-            'quartos' => $quartosDisponiveis,
+            'quartosDisponiveis' => $quartosDisponiveis,
         ]);
     }
 
@@ -109,11 +109,159 @@ class ReservaController extends Controller
     }
 
     // Listagem de reservas para administrador
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $reservas = Reserva::with(['quarto', 'hospede'])->orderByDesc('created_at')->get();
+        $query = Reserva::with(['quarto', 'hospede']);
+
+        // Busca por hóspede
+        if ($request->filled('hospede')) {
+            $query->whereHas('hospede', function($q) use ($request) {
+                $q->where('nome', 'like', '%' . $request->hospede . '%');
+            });
+        }
+
+        // Busca por quarto
+        if ($request->filled('quarto')) {
+            $query->whereHas('quarto', function($q) use ($request) {
+                $q->where('tipoQuarto', 'like', '%' . $request->quarto . '%');
+            });
+        }
+
+        // Busca por status
+        if ($request->filled('status')) {
+            $query->where('status', 'like', '%' . $request->status . '%');
+        }
+
+        // Busca por data de entrada
+        if ($request->filled('data_entrada')) {
+            $query->whereDate('data_entrada', $request->data_entrada);
+        }
+
+        $reservas = $query->orderByDesc('created_at')->get();
 
         return view('administrador.reservas', compact('reservas'));
+    }
+
+    /**
+     * Exibe o formulário de edição de reserva
+     */
+    public function edit($id)
+    {
+        $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
+            ->with('quarto')
+            ->findOrFail($id);
+
+        // Verifica se a reserva pode ser editada (apenas ativas)
+        if (strtolower($reserva->status) !== 'ativa') {
+            return redirect()->route('hospede.dashboard')
+                ->with('error', 'Apenas reservas ativas podem ser editadas.');
+        }
+
+        $quartosDisponiveis = Quarto::whereRaw('LOWER(status) = ?', ['disponível'])->get();
+
+        return view('reserva.form', compact('reserva', 'quartosDisponiveis'));
+    }
+
+    /**
+     * Atualiza uma reserva
+     */
+    public function update(Request $request, $id)
+    {
+        $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
+            ->findOrFail($id);
+
+        // Verifica se a reserva pode ser editada
+        if (strtolower($reserva->status) !== 'ativa') {
+            return redirect()->route('hospede.dashboard')
+                ->with('error', 'Apenas reservas ativas podem ser editadas.');
+        }
+
+        $request->validate([
+            'data_entrada' => 'required|date',
+            'data_saida'   => 'required|date|after_or_equal:data_entrada',
+            'quarto_id'    => 'required|exists:quartos,id',
+        ], [
+            'data_entrada.required' => 'A data de entrada é obrigatória',
+            'data_saida.required' => 'A data de saída é obrigatória',
+            'data_saida.after_or_equal' => 'A data de saída deve ser posterior à de entrada',
+            'quarto_id.required' => 'Selecione um quarto',
+        ]);
+
+        $quarto = Quarto::findOrFail($request->quarto_id);
+
+        // Verifica se o quarto está disponível
+        if (strtolower($quarto->status) !== 'disponível') {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['quarto_id' => 'Este quarto não está disponível para reserva.']);
+        }
+
+        // Verifica conflitos de datas com outras reservas ativas do mesmo quarto
+        // (excluindo a própria reserva que está sendo editada)
+        $dataEntrada = $request->data_entrada;
+        $dataSaida = $request->data_saida;
+
+        $conflito = Reserva::where('quarto_id', $request->quarto_id)
+            ->where('id', '!=', $id)
+            ->whereIn('status', ['Ativa', 'ativa'])
+            ->where(function($query) use ($dataEntrada, $dataSaida) {
+                $query->whereBetween('data_entrada', [$dataEntrada, $dataSaida])
+                      ->orWhereBetween('data_saida', [$dataEntrada, $dataSaida])
+                      ->orWhere(function($q) use ($dataEntrada, $dataSaida) {
+                          $q->where('data_entrada', '<=', $dataEntrada)
+                            ->where('data_saida', '>=', $dataSaida);
+                      });
+            })
+            ->exists();
+
+        if ($conflito) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['data_entrada' => 'Este quarto já possui uma reserva ativa no período selecionado.']);
+        }
+
+        $reserva->update([
+            'data_entrada' => $request->data_entrada,
+            'data_saida'   => $request->data_saida,
+            'quarto_id'    => $request->quarto_id,
+        ]);
+
+        return redirect()->route('hospede.dashboard')
+            ->with('success', 'Reserva atualizada com sucesso!');
+    }
+
+    /**
+     * Busca reservas
+     */
+    public function search(Request $request)
+    {
+        $query = Reserva::with('quarto')
+            ->where('hospede_id', Auth::guard('hospede')->id());
+
+        if ($request->filled('tipo') && $request->filled('valor')) {
+            $tipo = $request->input('tipo');
+            $valor = $request->input('valor');
+
+            switch ($tipo) {
+                case 'tipoQuarto':
+                    $query->whereHas('quarto', function($q) use ($valor) {
+                        $q->where('tipoQuarto', 'like', '%' . $valor . '%');
+                    });
+                    break;
+
+                case 'status':
+                    $query->where('status', 'like', '%' . $valor . '%');
+                    break;
+
+                case 'data_entrada':
+                    $query->whereDate('data_entrada', $valor);
+                    break;
+            }
+        }
+
+        $dados = $query->orderByDesc('data_entrada')->get();
+
+        return view('reserva.list', compact('dados'));
     }
 
     public function destroy($id)

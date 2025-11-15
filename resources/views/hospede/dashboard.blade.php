@@ -30,6 +30,20 @@
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge bg-success">{{ ucfirst($res->status) }}</span>
                             
+                            @if(!$res->pagamento)
+                                <a href="{{ route('pagamento.create', $res->id) }}" 
+                                   class="btn btn-success btn-sm">
+                                    💳 Pagar
+                                </a>
+                            @else
+                                <span class="badge bg-info">Pago</span>
+                            @endif
+                            
+                            <a href="{{ route('reserva.edit', $res->id) }}" 
+                               class="btn btn-outline-warning btn-sm">
+                                ✏️ Editar
+                            </a>
+                            
                             <a href="{{ route('reserva.comprovante', $res->id) }}" 
                                class="btn btn-outline-primary btn-sm" 
                                target="_blank">

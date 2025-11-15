@@ -14,7 +14,7 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <form action="{{ route('hospede.update', $hospede->id) }}" method="POST">
+            <form action="{{ route('hospede.update', $hospede->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -67,11 +67,26 @@
                     </div>
                 </div>
 
-             <div class="form-group">
-                    <label for="senha">Nova Senha (opcional)</label>
-                    <input type="password" name="senha" id="senha" class="form-control">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="senha" class="form-label">Nova Senha (opcional)</label>
+                        <input type="password" name="senha" id="senha" class="form-control">
+                        <small class="text-muted">Deixe em branco para manter a senha atual</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="imagem" class="form-label">Foto de Perfil</label>
+                        <input type="file" name="imagem" id="imagem" class="form-control" accept="image/*">
+                        <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</small>
+                        @if($hospede->imagem)
+                            <div class="mt-2">
+                                <p class="mb-1">Imagem atual:</p>
+                                <img src="{{ asset('storage/' . $hospede->imagem) }}" 
+                                     alt="Foto de perfil" 
+                                     style="max-width: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                            </div>
+                        @endif
+                    </div>
                 </div>
-               
 
                 <div class="text-end">
                     <button type="submit" class="btn btn-success">Salvar Alterações</button>

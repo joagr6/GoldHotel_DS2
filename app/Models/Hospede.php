@@ -21,6 +21,7 @@ class Hospede extends Authenticatable
         'numcasa',
         'rua',
         'senha',
+        'imagem',
     ];
 
     protected $hidden = ['remember_token'];

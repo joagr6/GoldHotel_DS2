@@ -6,6 +6,7 @@ use App\Http\Controllers\HospedeController;
 use App\Http\Controllers\QuartoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdministradorController;
+use App\Http\Controllers\PagamentoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,10 @@ Route::middleware('auth:hospede')->group(function () {
     Route::get('/hospede/dashboard', [HospedeController::class, 'dashboard'])->name('hospede.dashboard');
     Route::get('/quarto/quartos', [QuartoController::class, 'listaHospede'])->name('quarto.dashboard');
     Route::get('/reserva/comprovante/{id}', [ReservaController::class, 'comprovante'])->name('reserva.comprovante');
+    
+    // Rotas de pagamento
+    Route::get('/pagamento/{reservaId}', [PagamentoController::class, 'create'])->name('pagamento.create');
+    Route::post('/pagamento/{reservaId}', [PagamentoController::class, 'store'])->name('pagamento.store');
 });
 
 //  Rotas de reservas 

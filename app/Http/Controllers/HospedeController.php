@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Hospede;
 
 class HospedeController extends Controller
@@ -55,13 +56,13 @@ public function index(Request $request)
 {
     $hospede = Auth::guard('hospede')->user();
 
-    $ativas = \App\Models\Reserva::with('quarto')
+    $ativas = \App\Models\Reserva::with(['quarto', 'pagamento'])
         ->where('hospede_id', optional($hospede)->id)
         ->whereIn('status', ['Ativa', 'ativa'])
         ->orderByDesc('data_entrada')
         ->get();
 
-    $passadas = \App\Models\Reserva::with('quarto')
+    $passadas = \App\Models\Reserva::with(['quarto', 'pagamento'])
         ->where('hospede_id', optional($hospede)->id)
         ->whereIn('status', ['Finalizada', 'finalizada', 'Cancelada', 'cancelada'])
         ->orderByDesc('data_entrada')
@@ -96,9 +97,10 @@ public function logout(Request $request)
             'numcasa' => 'nullable|string|max:50',
             'rua' => 'nullable|string|max:50',
             'senha' => 'required|string',
+            'imagem' => 'nullable|image|max:2048',
         ]);
 
-        Hospede::create([
+        $data = [
             'nome' => $request->nome,
             'cpf' => $request->cpf,
             'data_nascimento' => $request->data_nascimento,
@@ -108,7 +110,13 @@ public function logout(Request $request)
             'numcasa' => $request->numcasa,
             'rua' => $request->rua,
             'senha' => Hash::make($request->senha),
-        ]);
+        ];
+
+        if ($request->hasFile('imagem')) {
+            $data['imagem'] = $request->file('imagem')->store('hospedes', 'public');
+        }
+
+        Hospede::create($data);
 
         return redirect()->route('login.usuario', ['tipo' => 'hospede'])
         ->with('success', 'Cadastro realizado com sucesso!');
@@ -147,6 +155,7 @@ public function update(Request $request, $id)
         'data_nascimento' => 'required|date',
         'email' => 'required|email|unique:hospedes,email,' . $id,
         'senha' => 'nullable|string|min:6|confirmed',
+        'imagem' => 'nullable|image|max:2048',
     ]);
 
     $hospede->nome = $validated['nome'];
@@ -155,6 +164,14 @@ public function update(Request $request, $id)
 
     if (!empty($validated['senha'])) {
         $hospede->senha = bcrypt($validated['senha']);
+    }
+
+    if ($request->hasFile('imagem')) {
+        // Remove a imagem antiga se existir
+        if ($hospede->imagem && Storage::disk('public')->exists($hospede->imagem)) {
+            Storage::disk('public')->delete($hospede->imagem);
+        }
+        $hospede->imagem = $request->file('imagem')->store('hospedes', 'public');
     }
 
     $hospede->save();

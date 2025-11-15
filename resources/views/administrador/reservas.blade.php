@@ -1,25 +1,69 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas - Administração</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light p-4">
+@extends('administrador.base')
 
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Listagem de Reservas</h3>
-            <a href="{{ route('dashboard.admin') }}" class="btn btn-secondary">Voltar</a>
+@section('title', 'Reservas - Administração')
+
+@section('content')
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold mb-0">Listagem de Reservas</h1>
+    </div>
+
+        {{-- Formulário de Busca --}}
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+            <h5 class="mb-3">Buscar Reservas</h5>
+            <form method="GET" action="{{ route('admin.reservas.index') }}" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Hóspede</label>
+                    <input 
+                        type="text" 
+                        name="hospede" 
+                        class="form-control" 
+                        placeholder="Nome do hóspede"
+                        value="{{ request('hospede') }}"
+                    >
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Quarto</label>
+                    <input 
+                        type="text" 
+                        name="quarto" 
+                        class="form-control" 
+                        placeholder="Tipo de quarto"
+                        value="{{ request('quarto') }}"
+                    >
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="Ativa" {{ request('status') == 'Ativa' ? 'selected' : '' }}>Ativa</option>
+                        <option value="Cancelada" {{ request('status') == 'Cancelada' ? 'selected' : '' }}>Cancelada</option>
+                        <option value="Finalizada" {{ request('status') == 'Finalizada' ? 'selected' : '' }}>Finalizada</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Data Entrada</label>
+                    <input 
+                        type="date" 
+                        name="data_entrada" 
+                        class="form-control"
+                        value="{{ request('data_entrada') }}"
+                    >
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                    </button>
+                </div>
+            </form>
+            @if (request()->anyFilled(['hospede', 'quarto', 'status', 'data_entrada']))
+                <div class="mt-2">
+                    <a href="{{ route('admin.reservas.index') }}" class="btn btn-sm btn-outline-secondary">
+                        Limpar Filtros
+                    </a>
+                </div>
+            @endif
         </div>
-
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
 
         @if(!$reservas->count())
             <div class="alert alert-warning">Nenhuma reserva encontrada.</div>
@@ -58,10 +102,7 @@
                 </table>
             </div>
         @endif
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
 
 

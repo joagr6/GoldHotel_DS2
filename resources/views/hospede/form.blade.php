@@ -149,7 +149,7 @@
             </div>
         @endif
 
-        <form action="{{ route('hospede.store') }}" method="POST">
+        <form action="{{ route('hospede.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row g-3">
@@ -193,6 +193,12 @@
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" name="senha" id="senha" class="form-control" required>
                 </div>
+
+                <div class="col-md-12">
+                    <label for="imagem" class="form-label">Foto de Perfil (opcional)</label>
+                    <input type="file" name="imagem" id="imagem" class="form-control" accept="image/*">
+                    <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</small>
+                </div>
             </div>
 
             <div class="d-flex justify-content-between mt-4">
@@ -203,3 +209,4 @@
     </div>
 </div>
 @endsection
+

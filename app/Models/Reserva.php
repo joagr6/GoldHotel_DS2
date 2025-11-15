@@ -37,4 +37,13 @@ class Reserva extends Model
     {
         return $this->belongsTo(Quarto::class);
     }
+
+    /**
+     * Relação com o pagamento
+     * Uma reserva tem um pagamento (relacionamento 1:1)
+     */
+    public function pagamento()
+    {
+        return $this->hasOne(Pagamento::class);
+    }
 }

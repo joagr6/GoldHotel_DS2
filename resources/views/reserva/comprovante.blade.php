@@ -17,13 +17,10 @@
             padding: 20px;
         }
         .header {
-            text-align: center;
-            border-bottom: 3px solid #d4af37;
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
         .header h1 {
-            color: #d4af37;
             font-size: 28px;
             margin-bottom: 5px;
             text-transform: uppercase;
@@ -34,7 +31,6 @@
             font-size: 11px;
         }
         .comprovante-title {
-            text-align: center;
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 30px;
@@ -49,7 +45,6 @@
             margin-bottom: 10px;
             font-size: 14px;
             color: #333;
-            border-left: 4px solid #d4af37;
         }
         .info-row {
             display: flex;
@@ -69,7 +64,6 @@
             background-color: #f9f9f9;
             padding: 15px;
             margin-top: 30px;
-            border: 2px solid #d4af37;
         }
         .total-row {
             display: flex;
@@ -82,7 +76,6 @@
         }
         .total-value {
             font-weight: bold;
-            color: #d4af37;
             font-size: 16px;
         }
         .footer {

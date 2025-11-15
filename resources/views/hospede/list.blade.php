@@ -1,24 +1,10 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Hóspedes</title>
+@extends('administrador.base')
 
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('title', 'Listagem de Hóspedes')
 
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body class="bg-light p-4">
+@section('content')
 
-<div class="container">
-    <a href="{{ url('/admin/dashboard') }}" class="btn btn-secondary mb-3">
-        <i class="fa-solid fa-arrow-left"></i> Voltar
-    </a>
-
-    <h3 class="mb-4">Listagem de Hóspedes</h3>
+    <h1 class="fw-bold mb-4">Listagem de Hóspedes</h1>
 
     {{-- 🔍 Formulário de Pesquisa --}}
     <form action="{{ route('hospede.list') }}" method="GET" class="row g-3 mb-4 align-items-end">
@@ -49,10 +35,6 @@
         </div>
     </form>
 
-    {{-- ✅ Mensagens de feedback --}}
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
     {{-- 🧾 Tabela de Hóspedes --}}
     @if ($hospedes->isEmpty())
@@ -63,6 +45,7 @@
                 <thead class="table-primary">
                     <tr>
                         <th>ID</th>
+                        <th>Foto</th>
                         <th>Nome</th>
                         <th>CPF</th>
                         <th>Data Nasc.</th>
@@ -77,6 +60,15 @@
                     @foreach ($hospedes as $h)
                         <tr>
                             <td>{{ $h->id }}</td>
+                            <td class="text-center">
+                                @if ($h->imagem)
+                                    <img src="{{ asset('storage/' . $h->imagem) }}" 
+                                         alt="Foto de {{ $h->nome }}" 
+                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 1px solid #ddd;">
+                                @else
+                                    <span class="text-muted">Sem foto</span>
+                                @endif
+                            </td>
                             <td>{{ $h->nome }}</td>
                             <td>{{ $h->cpf }}</td>
                             <td>{{ date('d/m/Y', strtotime($h->data_nascimento)) }}</td>
@@ -91,9 +83,6 @@
             </table>
         </div>
     @endif
-</div>
 
-{{-- Bootstrap JS --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
+
