@@ -43,6 +43,7 @@
                     <li class="nav-item"><a href="{{ route('hospede.dashboard') }}" class="nav-link">Reservas</a></li>
                     <li class="nav-item"><a href="{{ route('hospede.dados') }}" class="nav-link">Meus dados</a></li>
                     <li class="nav-item"><a href="{{ route('quarto.dashboard') }}" class="nav-link">Quartos</a></li>
+                    <li class="nav-item"><a href="{{ route('servico.dashboard') }}" class="nav-link">Serviço Adicional</a></li>
                     <li class="nav-item"><a href="{{ route('hospede.logout') }}" class="nav-link">Sair</a></li>
                 </ul>
             </div>

@@ -7,10 +7,14 @@ use App\Http\Controllers\QuartoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdministradorController;
 use App\Http\Controllers\PagamentoController;
-
+use App\Http\Controllers\ServicoAdicionalController;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+//serviço adicional 
+Route::get('/servico-adicional', [ReservaController::class, 'servicoAdicional'])->name('servico.dashboard');
+
 
 //  Login e cadastro de hóspede
  
