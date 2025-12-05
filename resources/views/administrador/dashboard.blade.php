@@ -94,6 +94,31 @@
             </div>
         </div>
     </div>
+     <!-- Serviço Adicional -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-3">Serviço Adicional</h2>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="action-card">
+                    <h5><i class="fa-solid fa-bed text-success"></i> Listar Serviços</h5>
+                    <p class="text-muted">Visualize todos os Servicos cadastrados</p>
+                    <a href="{{ route('servicos.store') }}" class="btn btn-success">
+                        <i class="fa-solid fa-list"></i> Listar Serviços
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="action-card">
+                    <h5><i class="fa-solid fa-plus-circle text-info"></i> Cadastrar Serviço</h5>
+                    <p class="text-muted">Adicione um novo servoço ao sistema</p>
+                    <a href="{{ route('servicos.create') }}" class="btn btn-info">
+                        <i class="fa-solid fa-plus"></i> Cadastrar Serviço
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
     <!-- GRÁFICOS -->
     <div class="mt-4">

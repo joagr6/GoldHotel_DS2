@@ -1,6 +1,6 @@
 @extends('administrador.base')
 
-@section('title', 'Listagem de Hóspedes')
+@section('title', 'Listagem de Serviços Adicionais')
 
 @section('content')
 <style>
@@ -19,91 +19,95 @@
         transition: 0.3s;
         font-weight: 600;
     }
-     .btn-back:hover {
+    .btn-back:hover {
         background: white;
         color: #000000ff;
     }
-    </style>
-  <a href="{{ url('/admin/dashboard') }}" class="btn-back">← </a>
-    <h1 class="fw-bold mb-4">Listagem de Hóspedes</h1>
+</style>
 
-    {{-- 🔍 Formulário de Pesquisa --}}
-    <form action="{{ route('hospede.list') }}" method="GET" class="row g-3 mb-4 align-items-end">
-        <div class="col-md-3">
-            <label class="form-label">Filtrar por:</label>
-            <select name="tipo" class="form-select">
-                <option value="nome" {{ request('tipo') == 'nome' ? 'selected' : '' }}>Nome</option>
-                <option value="cpf" {{ request('tipo') == 'cpf' ? 'selected' : '' }}>CPF</option>
-                <option value="cidade" {{ request('tipo') == 'cidade' ? 'selected' : '' }}>Cidade</option>
-            </select>
-        </div>
+<a href="{{ url('/admin/dashboard') }}" class="btn-back">←</a>
 
-        <div class="col-md-4">
-            <label class="form-label">Valor</label>
-            <input 
-                type="text" 
-                name="valor" 
-                value="{{ request('valor') }}" 
-                class="form-control" 
-                placeholder="Pesquisar..."
-            >
-        </div>
+<h1 class="fw-bold mb-4">Listagem de Serviços Adicionais</h1>
 
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary">
-                <i class="fa-solid fa-magnifying-glass"></i> Buscar
-            </button>
-        </div>
-    </form>
+{{-- 🔍 Formulário de Pesquisa --}}
+<form action="{{ route('servicos.index') }}" method="GET" class="row g-3 mb-4 align-items-end">
+    <div class="col-md-3">
+        <label class="form-label">Filtrar por:</label>
+        <select name="tipo" class="form-select">
+            <option value="nome" {{ request('tipo') == 'nome' ? 'selected' : '' }}>Nome</option>
+            <option value="valor" {{ request('tipo') == 'valor' ? 'selected' : '' }}>Valor</option>
+            <option value="status" {{ request('tipo') == 'status' ? 'selected' : '' }}>Status</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Valor</label>
+        <input 
+            type="text" 
+            name="valor" 
+            value="{{ request('valor') }}" 
+            class="form-control" 
+            placeholder="Pesquisar..."
+        >
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-magnifying-glass"></i> Buscar
+        </button>
+    </div>
+</form>
 
 
-    {{-- 🧾 Tabela de Hóspedes --}}
-    @if ($hospedes->isEmpty())
-        <div class="alert alert-warning">Nenhum hóspede encontrado.</div>
-    @else
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle bg-white shadow-sm">
-                <thead class="table-primary">
+{{-- 🧾 Tabela de Serviços --}}
+@if ($servicos->isEmpty())
+    <div class="alert alert-warning">Nenhum serviço encontrado.</div>
+@else
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle bg-white shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Valor (R$)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($servicos as $s)
                     <tr>
-                        <th>ID</th>
-                        <th>Foto</th>
-                        <th>Nome</th>
-                        <th>CPF</th>
-                        <th>Data Nasc.</th>
-                        <th>Telefone</th>
-                        <th>Email</th>
-                        <th>Cidade</th>
-                        <th>Rua</th>
-                        <th>Nº</th>
+                        <td>{{ $s->id }}</td>
+
+                        <td class="text-center">
+                            @if ($s->imagem)
+                                <img src="{{ asset('storage/' . $s->imagem) }}" 
+                                     alt="Imagem de {{ $s->nome }}" 
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                            @else
+                                <span class="text-muted">Sem imagem</span>
+                            @endif
+                        </td>
+
+                        <td>{{ $s->nome }}</td>
+
+                        <td style="max-width: 300px;">
+                            {{ Str::limit($s->descricao, 80) }}
+                        </td>
+
+                        <td>R$ {{ number_format($s->valor, 2, ',', '.') }}</td>
+
+                        <td>
+                            <span class="badge {{ $s->status == 'Ativo' ? 'bg-success' : 'bg-secondary' }}">
+                                {{ $s->status }}
+                            </span>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($hospedes as $h)
-                        <tr>
-                            <td>{{ $h->id }}</td>
-                            <td class="text-center">
-                                @if ($h->imagem)
-                                    <img src="{{ asset('storage/' . $h->imagem) }}" 
-                                         alt="Foto de {{ $h->nome }}" 
-                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 1px solid #ddd;">
-                                @else
-                                    <span class="text-muted">Sem foto</span>
-                                @endif
-                            </td>
-                            <td>{{ $h->nome }}</td>
-                            <td>{{ $h->cpf }}</td>
-                            <td>{{ date('d/m/Y', strtotime($h->data_nascimento)) }}</td>
-                            <td>{{ $h->telefone }}</td>
-                            <td>{{ $h->email }}</td>
-                            <td>{{ $h->cidade }}</td>
-                            <td>{{ $h->rua }}</td>
-                            <td>{{ $h->numcasa }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endif
 
 @endsection
-

@@ -13,7 +13,7 @@ Route::get('/', function () {
 })->name('home');
 
 //serviço adicional 
-Route::get('/servico-adicional', [ReservaController::class, 'servicoAdicional'])->name('servico.dashboard');
+Route::get('/servico-adicional', [ServicoAdicionalController::class, 'servicoAdicional'])->name('servico.dashboard');
 
 
 //  Login e cadastro de hóspede
@@ -68,6 +68,16 @@ Route::middleware('auth:administrador')->group(function () {
 
     // Reservas - administração
     Route::get('/admin/reservas', [ReservaController::class, 'adminIndex'])->name('admin.reservas.index');
+
+
+        // Serviços Adicionais
+    Route::get('/servicos',          [ServicoAdicionalController::class, 'index'])->name('servicos.index');
+    Route::get('/servicos/create',   [ServicoAdicionalController::class, 'create'])->name('servicos.create');
+    Route::post('/servicos',         [ServicoAdicionalController::class, 'store'])->name('servicos.store');
+    Route::get('/servicos/{id}/edit',[ServicoAdicionalController::class, 'edit'])->name('servicos.edit');
+    Route::put('/servicos/{id}',     [ServicoAdicionalController::class, 'update'])->name('servicos.update');
+    Route::delete('/servicos/{id}',  [ServicoAdicionalController::class, 'destroy'])->name('servicos.destroy');
+
 });
 
 
