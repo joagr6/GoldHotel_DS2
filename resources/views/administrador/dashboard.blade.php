@@ -94,14 +94,15 @@
             </div>
         </div>
     </div>
-     <!-- Serviço Adicional -->
+
+    <!-- SERVIÇOS ADICIONAIS -->
     <div class="mb-4">
         <h2 class="fw-bold mb-3">Serviço Adicional</h2>
         <div class="row g-3">
             <div class="col-md-6">
                 <div class="action-card">
-                    <h5><i class="fa-solid fa-bed text-success"></i> Listar Serviços</h5>
-                    <p class="text-muted">Visualize todos os Servicos cadastrados</p>
+                    <h5><i class="fa-solid fa-broom text-success"></i> Listar Serviços</h5>
+                    <p class="text-muted">Visualize todos os serviços cadastrados</p>
                     <a href="{{ route('servicos.store') }}" class="btn btn-success">
                         <i class="fa-solid fa-list"></i> Listar Serviços
                     </a>
@@ -110,7 +111,7 @@
             <div class="col-md-6">
                 <div class="action-card">
                     <h5><i class="fa-solid fa-plus-circle text-info"></i> Cadastrar Serviço</h5>
-                    <p class="text-muted">Adicione um novo servoço ao sistema</p>
+                    <p class="text-muted">Adicione um novo serviço ao sistema</p>
                     <a href="{{ route('servicos.create') }}" class="btn btn-info">
                         <i class="fa-solid fa-plus"></i> Cadastrar Serviço
                     </a>
@@ -118,7 +119,6 @@
             </div>
         </div>
     </div>
-    
 
     <!-- GRÁFICOS -->
     <div class="mt-4">
@@ -145,6 +145,14 @@
                 </div>
             </div>
 
+            <!-- NOVO GRÁFICO -->
+            <div class="col-md-12">
+                <div class="grafico-card">
+                    <h5 class="text-center">Quartos Mais Reservados do Mês</h5>
+                    {!! $graficoQuartoMaisReservado->container() !!}
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -154,4 +162,5 @@
     {{ $graficoReservas->script() }}
     {{ $graficoQuartos->script() }}
     {{ $graficoHospedes->script() }}
+    {{ $graficoQuartoMaisReservado->script() }}
 @endpush

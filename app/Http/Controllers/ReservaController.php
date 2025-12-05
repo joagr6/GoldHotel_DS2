@@ -11,16 +11,48 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservaController extends Controller
 {
-    public function index()
+    // ============================================================
+    // ADMIN - LISTAGEM COM FILTROS
+    // ============================================================
+    public function adminIndex(Request $request)
     {
-        $dados = Reserva::with(['quarto', 'servicos'])
-            ->where('hospede_id', Auth::guard('hospede')->id())
-            ->orderByDesc('data_entrada')
-            ->get();
+        // Inicia a query com relacionamentos
+        $query = Reserva::with(['hospede', 'quarto']);
 
-        return view('reserva.list', compact('dados'));
+        // Filtro por nome do hóspede
+        if ($request->filled('hospede')) {
+            $query->whereHas('hospede', function ($q) use ($request) {
+                $q->where('nome', 'like', '%' . $request->hospede . '%');
+            });
+        }
+
+        // Filtro por tipo de quarto
+        if ($request->filled('quarto')) {
+            $query->whereHas('quarto', function ($q) use ($request) {
+                $q->where('tipoQuarto', 'like', '%' . $request->quarto . '%');
+            });
+        }
+
+        // Filtro por status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filtro por data de entrada
+        if ($request->filled('data_entrada')) {
+            $query->whereDate('data_entrada', $request->data_entrada);
+        }
+
+        // Executa busca
+        $reservas = $query->orderBy('id', 'desc')->get();
+
+        // Retorna para a view correta
+        return view('administrador.reservas', compact('reservas'));
     }
 
+    // ============================================================
+    // CREATE
+    // ============================================================
     public function create(Request $request)
     {
         $quartoId = $request->input('quarto_id');
@@ -34,7 +66,6 @@ class ReservaController extends Controller
 
         $quartosDisponiveis = Quarto::whereRaw('LOWER(status) = ?', ['disponível'])->get();
 
-        // Serviços ativos
         $servicos = ServicoAdicional::where('status', 'Ativo')->get();
 
         return view('reserva.form', [
@@ -44,6 +75,9 @@ class ReservaController extends Controller
         ]);
     }
 
+    // ============================================================
+    // STORE
+    // ============================================================
     public function store(Request $request)
     {
         $request->validate([
@@ -59,7 +93,6 @@ class ReservaController extends Controller
                          ->withInput();
         }
 
-        // Criar reserva
         $reserva = Reserva::create([
             'data_entrada' => $request->data_entrada,
             'data_saida'   => $request->data_saida,
@@ -68,13 +101,15 @@ class ReservaController extends Controller
             'quarto_id'    => $request->quarto_id,
         ]);
 
-        // 🔥 SALVAR SERVIÇOS ADICIONAIS (N:N)
         $reserva->servicos()->attach($request->servicos ?? []);
 
         return redirect()->route('hospede.dashboard')
             ->with('success', 'Reserva registrada com sucesso!');
     }
 
+    // ============================================================
+    // EDIT
+    // ============================================================
     public function edit($id)
     {
         $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
@@ -86,7 +121,6 @@ class ReservaController extends Controller
                 ->with('error', 'Apenas reservas ativas podem ser editadas.');
         }
 
-        // Quarto ainda deve estar disponível OU pode manter o mesmo quarto
         $quartosDisponiveis = Quarto::whereRaw('LOWER(status) = ?', ['disponível'])
             ->orWhere('id', $reserva->quarto_id)
             ->get();
@@ -96,6 +130,9 @@ class ReservaController extends Controller
         return view('reserva.form', compact('reserva', 'quartosDisponiveis', 'servicos'));
     }
 
+    // ============================================================
+    // UPDATE
+    // ============================================================
     public function update(Request $request, $id)
     {
         $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
@@ -113,10 +150,32 @@ class ReservaController extends Controller
             'quarto_id'    => $request->quarto_id,
         ]);
 
-        // 🔥 ATUALIZAR SERVIÇOS (N:N)
         $reserva->servicos()->sync($request->servicos ?? []);
 
         return redirect()->route('hospede.dashboard')
             ->with('success', 'Reserva atualizada com sucesso!');
     }
-}
+
+public function destroy($id)
+{
+    // Só permite cancelar reserva do próprio hóspede
+    $reserva = Reserva::where('hospede_id', Auth::guard('hospede')->id())
+        ->findOrFail($id);
+
+    if (strtolower($reserva->status) !== 'ativa') {
+        return back()->with('error', 'Apenas reservas ativas podem ser canceladas.');
+    }
+
+    // Atualizar status da reserva
+    $reserva->update([
+        'status' => 'Cancelada',
+    ]);
+
+    // Opcional: liberar o quarto automaticamente
+    $reserva->quarto->update([
+        'status' => 'Disponível',
+    ]);
+
+    return redirect()->route('hospede.dashboard')
+        ->with('success', 'Reserva cancelada com sucesso!');
+}}

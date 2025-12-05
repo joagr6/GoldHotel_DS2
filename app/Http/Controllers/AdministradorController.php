@@ -43,36 +43,74 @@ class AdministradorController extends Controller
         return redirect()->route('login.admin');
     }
 
-    // DASHBOARD DO ADMINISTRADOR
+    // =============================================
+    // 🔵 DASHBOARD DO ADMINISTRADOR
+    // =============================================
     public function dashboard()
     {
-        // Dados
+        // ===============================
+        // 🔹 Dados principais
+        // ===============================
         $totalReservas = Reserva::count();
         $quartosDisponiveis = Quarto::where('status', 'disponivel')->count();
         $totalHospedes = Hospede::count();
 
-        // Gráfico 1 - Reservas
+        // ===============================
+        // 🔹 Gráfico 1 - Reservas Totais
+        // ===============================
         $graficoReservas = (new LarapexChart)->barChart()
             ->setTitle('Reservas Totais')
             ->addData('Reservas', [$totalReservas])
             ->setXAxis(['Total']);
 
-        // Gráfico 2 - Quartos Disponíveis
+        // ===============================
+        // 🔹 Gráfico 2 - Quartos Disponíveis
+        // ===============================
         $graficoQuartos = (new LarapexChart)->barChart()
             ->setTitle('Quartos Disponíveis')
             ->addData('Disponíveis', [$quartosDisponiveis])
             ->setXAxis(['Quartos']);
 
-        // Gráfico 3 - Hóspedes
+        // ===============================
+        // 🔹 Gráfico 3 - Total de Hóspedes
+        // ===============================
         $graficoHospedes = (new LarapexChart)->barChart()
             ->setTitle('Total de Hóspedes')
             ->addData('Hóspedes', [$totalHospedes])
             ->setXAxis(['Total']);
 
+        // =================================================
+        // 🔵 NOVO GRÁFICO — QUARTOS MAIS RESERVADOS DO MÊS
+        // =================================================
+        $mesAtual = now()->month;
+
+        $dados = Reserva::selectRaw('quarto_id, COUNT(*) as total')
+            ->whereMonth('created_at', $mesAtual)
+            ->groupBy('quarto_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $labels = [];
+        $valores = [];
+
+        foreach ($dados as $item) {
+            $labels[] = 'Quarto ' . $item->quarto_id; // Pode alterar para nome do quarto
+            $valores[] = $item->total;
+        }
+
+        $graficoQuartoMaisReservado = (new LarapexChart)->barChart()
+            ->setTitle('Quartos Mais Reservados do Mês')
+            ->addData('Reservas', $valores)
+            ->setXAxis($labels);
+
+        // ===============================
+        // 🔹 Retorno da View
+        // ===============================
         return view('administrador.dashboard', compact(
             'graficoReservas',
             'graficoQuartos',
-            'graficoHospedes'
+            'graficoHospedes',
+            'graficoQuartoMaisReservado'
         ));
     }
 }
