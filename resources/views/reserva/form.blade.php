@@ -70,6 +70,27 @@
                 </div>
             </div>
 
+
+            <div class="mb-3">
+    <label class="form-label fw-bold">Serviços adicionais</label>
+
+    @foreach ($servicos as $servico)
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" 
+                   name="servicos[]" 
+                   value="{{ $servico->id }}"
+                   @if(isset($reserva) && $reserva->servicos->contains($servico->id)) checked @endif>
+            <label class="form-check-label">
+                {{ $servico->nome }} — R$ {{ number_format($servico->valor, 2, ',', '.') }}
+            </label>
+        </div>
+    @endforeach
+</div>
+
+
+
+
+
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">{{ isset($reserva) ? 'Atualizar Reserva' : 'Confirmar Reserva' }}</button>
                 <a href="{{ isset($reserva) ? route('hospede.dashboard') : route('quarto.dashboard') }}" class="btn btn-secondary">Cancelar</a>

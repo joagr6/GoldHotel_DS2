@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('descricao');
             $table->decimal('valor', 10, 2);
             $table->string('status', 20);
-            $table->string('imagem')->nullable(); // ← imagem opcional
+            $table->string('imagem')->nullable(); 
             $table->timestamps();
         });
     }

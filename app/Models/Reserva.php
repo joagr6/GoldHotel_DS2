@@ -46,4 +46,10 @@ class Reserva extends Model
     {
         return $this->hasOne(Pagamento::class);
     }
-}
+
+
+    public function servicos()
+    {
+        return $this->belongsToMany(ServicoAdicional::class, 'reserva_servico', 'reserva_id', 'servico_id');
+
+    }}

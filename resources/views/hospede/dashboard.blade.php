@@ -109,13 +109,25 @@
             <div class="list-group">
                 @foreach ($ativas as $res)
                     <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-semibold">{{ optional($res->quarto)->tipoQuarto }}</div>
-                            <small>
-                                {{ \Carbon\Carbon::parse($res->data_entrada)->format('d/m/Y') }} –
-                                {{ \Carbon\Carbon::parse($res->data_saida)->format('d/m/Y') }}
-                            </small>
-                        </div>
+                       <div class="fw-semibold">{{ optional($res->quarto)->tipoQuarto }}</div>
+
+<small>
+    {{ \Carbon\Carbon::parse($res->data_entrada)->format('d/m/Y') }} –
+    {{ \Carbon\Carbon::parse($res->data_saida)->format('d/m/Y') }}
+</small>
+
+{{-- SERVIÇOS ADICIONAIS --}}
+@if ($res->servicos->count())
+    <div class="mt-1">
+        @foreach ($res->servicos as $serv)
+            <span class="badge bg-primary">{{ $serv->nome }}</span>
+        @endforeach
+    </div>
+@else
+    <div class="mt-1">
+        <span class="badge bg-secondary">Sem serviços adicionais</span>
+    </div>
+@endif
 
                         <div class="d-flex align-items-center gap-2">
 
@@ -165,36 +177,37 @@
     </div>
 
     {{-- RESERVAS PASSADAS --}}
-    <div class="card-custom">
-        <h5 class="mb-3 fw-bold" style="color:#1e3c72;">Reservas passadas</h5>
+<div class="card-custom">
+    <h5 class="mb-3 fw-bold" style="color:#1e3c72;">Reservas passadas</h5>
 
-        @if(isset($passadas) && $passadas->count())
-            <div class="list-group">
-                @foreach ($passadas as $res)
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-semibold">{{ optional($res->quarto)->tipoQuarto }}</div>
-                            <small>
-                                {{ \Carbon\Carbon::parse($res->data_entrada)->format('d/m/Y') }} –
-                                {{ \Carbon\Carbon::parse($res->data_saida)->format('d/m/Y') }}
-                            </small>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-secondary">{{ ucfirst($res->status) }}</span>
-
-                            <a href="{{ route('reserva.comprovante', $res->id) }}" 
-                               class="btn btn-outline-primary btn-sm" 
-                               target="_blank">
-                                📄 Comprovante
-                            </a>
-                        </div>
+    @if(isset($passadas) && $passadas->count())
+        <div class="list-group">
+            @foreach ($passadas as $res)
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-semibold">{{ optional($res->quarto)->tipoQuarto }}</div>
+                        <small>
+                            {{ \Carbon\Carbon::parse($res->data_entrada)->format('d/m/Y') }} –
+                            {{ \Carbon\Carbon::parse($res->data_saida)->format('d/m/Y') }}
+                        </small>
                     </div>
-                @endforeach
-            </div>
-        @else
-            <p class="text-muted mb-0">Sem histórico de reservas.</p>
-        @endif
-    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary">{{ ucfirst($res->status) }}</span>
+
+                        <a href="{{ route('reserva.comprovante', $res->id) }}" 
+                           class="btn btn-outline-primary btn-sm" 
+                           target="_blank">
+                            📄 Comprovante
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p class="text-muted mb-0">Sem histórico de reservas.</p>
+    @endif
+</div>
+
 
 @endsection

@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ServicoAdicional extends Model
 {
-    use HasFactory;
-
-    protected $table = 'servicosAdicionais'; // nome da tabela no banco
+    protected $table = 'servicosAdicionais';
 
     protected $fillable = [
         'nome',
@@ -18,4 +15,14 @@ class ServicoAdicional extends Model
         'status',
         'imagem',
     ];
+
+    public function reservas()
+    {
+        return $this->belongsToMany(
+            Reserva::class,
+            'reserva_servico', // nome da tabela pivot
+            'servico_id',      // FK neste model
+            'reserva_id'       // outra FK
+        );
+    }
 }
