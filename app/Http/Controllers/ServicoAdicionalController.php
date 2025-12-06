@@ -68,7 +68,7 @@ class ServicoAdicionalController extends Controller
     public function edit($id)
     {
         $servico = ServicoAdicional::findOrFail($id);
-        return view('servico.form', compact('servico'));
+        return view('servicoAdicional.form', compact('servico'));
     }
 
     public function update(Request $request, $id)

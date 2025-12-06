@@ -30,7 +30,6 @@
 
 <h1 class="fw-bold mb-4">Listagem de Serviços Adicionais</h1>
 
-{{-- 🔍 FILTRO --}}
 <form action="{{ route('servicos.index') }}" method="GET" class="row g-3 mb-4 align-items-end">
     <div class="col-md-3">
         <label class="form-label">Filtrar por:</label>
@@ -53,7 +52,6 @@
     </div>
 </form>
 
-{{-- 🧾 TABELA --}}
 @if ($servicos->isEmpty())
     <div class="alert alert-warning">Nenhum serviço encontrado.</div>
 @else
@@ -114,7 +112,6 @@
     @endif
 </td>
 
-                    {{-- ✏️🗑️ AÇÕES --}}
                     <td class="text-center">
                         <a href="{{ route('servicos.edit', $s->id) }}" class="btn btn-outline-warning btn-sm">
                             <i class="fa-solid fa-pen-to-square"></i>

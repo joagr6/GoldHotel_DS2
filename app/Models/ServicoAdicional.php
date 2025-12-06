@@ -20,9 +20,9 @@ class ServicoAdicional extends Model
     {
         return $this->belongsToMany(
             Reserva::class,
-            'reserva_servico', // nome da tabela pivot
-            'servico_id',      // FK neste model
-            'reserva_id'       // outra FK
+            'reserva_servico', 
+            'servico_id',      
+            'reserva_id'       
         );
     }
 }
